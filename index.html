@@ -412,7 +412,7 @@
             'TN', 'TN', 'L',  'L',  'TN', 'TN', 'TN', 'L',  'L',  'TN',
             'TN', 'L',  'L',  'L',  'TD', 'TD', 'L',  'L'
         ];
-        const workEmojisMap = { 'L': '⚽️', 'TD': '📚', 'TN': '💻' };
+        const workEmojisMap = { 'L': '🏠', 'TD': '📚', 'TN': '🌓' };
 
         const berlinHolidays = {
             2024: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 2, day: 29, name: "Karfreitag" }, { month: 3, day: 1, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 9, name: "Christi Himmelfahrt" }, { month: 4, day: 20, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
@@ -724,7 +724,7 @@
                 const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
                 const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
                 if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
-                else { emojiPlaceholder1.textContent = '❤️'; emojiPlaceholder1.classList.add('has-emoji'); }
+                else { emojiPlaceholder1.textContent = '🏠'; emojiPlaceholder1.classList.add('has-emoji'); }
                 emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
                 emojiArea.appendChild(emojiPlaceholder1);
 
@@ -783,7 +783,7 @@
                 const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
                 const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
                 if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
-                else { emojiPlaceholder1.textContent = '❤️'; emojiPlaceholder1.classList.add('has-emoji'); }
+                else { emojiPlaceholder1.textContent = '🏠'; emojiPlaceholder1.classList.add('has-emoji'); }
                 emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
                 emojiArea.appendChild(emojiPlaceholder1);
 
