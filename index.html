@@ -860,33 +860,3 @@
     </script>
 </body>
 </html>
-```
-
-**Pasos Adicionales para Ti:**
-
-1.  **Crear Proyecto Firebase**: Ve a [Firebase console](https://console.firebase.google.com/), crea un nuevo proyecto.
-2.  **Añadir App Web**: Dentro de tu proyecto Firebase, añade una aplicación web. Firebase te proporcionará un objeto de configuración `firebaseConfig`.
-3.  **Reemplazar `firebaseConfig`**: Copia el objeto `firebaseConfig` de tu proyecto Firebase y pégalo en el script HTML donde dice ``.
-4.  **Habilitar Authentication**:
-    * En la consola de Firebase, ve a "Authentication" (Autenticación).
-    * En la pestaña "Sign-in method" (Método de inicio de sesión), habilita "Email/Password" (Correo electrónico/Contraseña).
-    * Ve a la pestaña "Users" (Usuarios) y añade manualmente dos usuarios:
-        * Email: `usuario1@ejemplo.com`, Contraseña: `tonqui`
-        * Email: `usuario2@ejemplo.com`, Contraseña: `tonqui`
-5.  **Habilitar Firestore**:
-    * En la consola de Firebase, ve a "Firestore Database" (Base de datos Firestore).
-    * Crea una base de datos. Elige el modo de **producción** (production mode) si vas a desplegarlo, o modo de **prueba** (test mode) para desarrollo inicial (¡recuerda cambiar las reglas de seguridad antes de producción!).
-    * Para las reglas de seguridad de Firestore (pestaña "Rules"), para empezar y permitir que los usuarios autenticados lean y escriban sus propios datos de emojis, podrías usar algo como:
-        ```
-        rules_version = '2';
-        service cloud.firestore {
-          match /databases/{database}/documents {
-            match /users/{userId}/emojis/{dayId} {
-              allow read, write: if request.auth != null && request.auth.uid == userId;
-            }
-          }
-        }
-        ```
-        Esto significa que un usuario solo puede leer/escribir en la colección `emojis` bajo su propio `userId`.
-
-Una vez que hayas configurado Firebase y actualizado el `firebaseConfig` en el código, la aplicación debería funcionar online, guardando los emojis en Firestore y usando Firebase para la autenticación. El checkbox "Mantener la sesión iniciada" influirá en si la sesión persiste después de cerrar el navegad
