@@ -3,710 +3,890 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Trabajo</title>
+    <title>Calendario Interactivo Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
-        /* --- Variables de Color --- */
-        :root {
-            --bg-color-soft: #f8fafc;
-            /* Colores originales para estados */
-            --color-td: #f59e0b; /* Amarillo sol */
-            --color-tn: #4b5563; /* Gris/Azul noche */
-            --color-l: #22c55e;  /* Verde casa */
-            --color-vac: #0ea5e9; /* Azul claro avión */
-            --color-hotel: #a855f7; /* Púrpura hotel */
-            --color-flag-sk-blue: #0b4ea2; /* Azul bandera SK */
-            --color-flag-sk-red: #ee1c25;  /* Rojo bandera SK */
-            --color-default-icon2: #8b5cf6; /* Morado para segunda casa */
-            --color-current-day-border: #3b82f6; /* Azul para día actual */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            color: #1f2937;
         }
-
-        /* --- Estilos Generales --- */
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color-soft); margin: 0; min-height: 100vh; }
-        .button { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .button:hover { transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .button-primary { background-color: #4a5568; color: white; }
-        .button-primary:hover { background-color: #2d3748; }
-        .button-secondary { background-color: white; color: #4b5563; border-color: #d1d5db; }
-        .button-secondary:hover { background-color: #f9fafb; }
-
-        /* --- Aplicación Principal --- */
-        #calendar-app { max-width: 1600px; margin: 0 auto; padding: 1rem 0; }
-
-        /* --- Controles Superiores --- */
-        .controls-container { display: flex; justify-content: center; padding: 1rem 2rem; margin-bottom: 1.5rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); max-width: calc(1600px - 4rem); margin-left: auto; margin-right: auto; }
-        .year-navigation { display: flex; align-items: center; gap: 0.8rem; }
-        #current-year { font-size: 1.5rem; font-weight: bold; color: #1f2937; min-width: 80px; text-align: center; }
-
-        /* --- Calendario Anual --- */
-        .calendar-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; padding: 0 2rem 2rem 2rem; }
-        .month { border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .month:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
-        .month-header { background-color: #6b7280; color: white; padding: 0.4rem; text-align: center; font-weight: 600; font-size: 0.9rem; }
-        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; padding: 0.2rem; }
-        .day-header { font-weight: 600; font-size: 0.9rem; color: #6b7280; padding-bottom: 0.2rem; }
-        .day { padding: 0.8rem; font-size: 1rem; border-top: 1px solid #f3f4f6; position: relative; display: flex; align-items: center; justify-content: center; border-radius: 0.25rem; background-color: #ffffff; min-height: 40px; }
-        .day.empty { background-color: #f9fafb; border-top: none; }
-        .day span { position: absolute; top: 2px; right: 2px; background-color: rgba(255, 255, 255, 0.7); border-radius: 50%; padding: 0 2px; font-size: 0.6rem; z-index: 2; color: #374151; font-weight: normal; }
-        .day.current-day { border: 1.5px solid var(--color-current-day-border); font-weight: bold; }
-        
-        /* Iconos en vista anual */
-        .day .icon-container { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative; }
-        .day .icon-container .main-icon-wrapper  /* Contenedor icono 1 */ 
-        .day .icon-container .main-icon { font-size: 0.9rem; z-index: 1; }
-        .day .icon-container .main-icon.fa-sun { color: var(--color-td); }
-        .day .icon-container .main-icon.fa-moon { color: var(--color-tn); }
-        .day .icon-container .main-icon.fa-house { color: var(--color-l); }
-        .day .icon-container .main-icon.fa-plane { color: var(--color-vac); }
-        .day .icon-container .main-icon.fa-hotel { color: var(--color-hotel); }
-        
-        /* Indicador si icono 2 tiene override */
-        .day .secondary-indicator-wrapper  /* Contenedor indicador */ 
-        .day .secondary-indicator { position: absolute; bottom: 2px; left: 5px; width: 6px; height: 6px; border-radius: 50%; z-index: 1; border: 1px solid white; background-color: var(--color-default-icon2); }
-
-        /* --- Modal Mes Grande --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-        .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content { background-color: white; padding: 0; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); position: relative; width: 95%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-overlay.visible .modal-content { transform: scale(1); }
-        .modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; position: relative; display: flex; justify-content: center; align-items: center; }
-        .modal-title { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
-        .modal-close-btn { position: absolute; top: 50%; right: 1rem; transform: translateY(-50%); background: none; border: none; font-size: 1.8rem; color: #6b7280; cursor: pointer; line-height: 1; padding: 0.25rem; }
-        .modal-close-btn:hover { color: #1f2937; }
-        .modal-body { padding: 1.5rem; overflow-y: auto; }
-        
-        /* Grid del mes en modal */
-        .modal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
-        .modal-day-header { font-weight: bold; font-size: 0.9rem; color: #6b7280; padding-bottom: 0.5rem; text-align: center; }
-        
-        /* Celda día modal */
-        .modal-day {
-            min-height: 70px;
-            border: 1px solid #e5e7eb; border-radius: 0.5rem; position: relative;
-            padding: 0.5rem; background-color: #f8f8f8; cursor: pointer;
-            transition: background-color 0.2s; overflow: hidden;
-        /* FIX ICONOS LADO A LADO: Usar flex para controlar el layout interno */
+        .app-container { /* Contenedor general para centrar y gestionar la altura */
+            min-height: 100vh;
             display: flex;
-            align-items: center; /* Centrar verticalmente el contenedor de iconos */
-            justify-content: flex-start; /* Alinear contenedor de iconos a la izquierda */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .modal-day:hover { background-color: #f0f0f0; }
-        .modal-day.empty { background-color: #f9fafb; border-color: #f9fafb; cursor: default; }
-        /* Número día modal (Esquina superior derecha) */
-        .modal-day span {
-            position: absolute; top: 4px; right: 5px;
-            font-size: 0.8rem; font-weight: bold; color: #374151;
-            background-color: rgba(255, 255, 255, 0.7); padding: 1px 4px;
-            border-radius: 50%; z-index: 2;
+        .login-container, .calendar-container, .single-month-view-container {
+            width: 100%; /* Ocupan todo el ancho del app-container */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* justify-content se maneja por app-container o específicamente abajo */
         }
-        /* FIX ICONOS LADO A LADO: Contenedor principal de iconos */
-        .modal-day .icons-wrapper {
-            display: flex; /* Poner wrappers de iconos en fila */
-            flex-direction: row; /* Asegurar dirección horizontal */
-            align-items: center; /* Alinear verticalmente */
-            justify-content: flex-start; /* Alinear a la izquierda */
-            gap: 0.6rem; /* Espacio entre los dos iconos */
-            width: auto; /* Ajustar al contenido */
-            padding-left: 5px; /* Pequeño margen izquierdo general */
-            /* Quitar posicionamiento absoluto, ahora es controlado por flex */
-            position: static;
-            transform: none;
-            height: auto;
-            z-index: 1;
+        .single-month-view-container {
+            justify-content: flex-start;
+            padding-top: 70px; /* Espacio para los controles superiores fijos */
         }
-        /* FIX ICONOS LADO A LADO: Wrapper para cada icono individual */
-        .modal-day .status-icon-wrapper {
-             /* Quitar posicionamiento absoluto */
-             position: static;
-             line-height: 1;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             width: auto;
-             /* Quitar top/bottom */
+        .calendar-container {
+             padding-top: 70px; /* Espacio para los controles superiores fijos */
         }
-        
-        /* Wrapper BASE para cada icono individual */
-        /*.modal-day .status-icon-wrapper {
-             /*position: absolute; left: 7px;
-             /*line-height: 1; display: flex; align-items: center; justify-content: center;
-             /*width: auto; z-index: 1;}
-        /* Posición específica para icono 1 (arriba) */
-        /*.modal-day .status-icon-wrapper-1 { top: 2px; }
-        /* Posición específica para icono 2 (abajo) */
-        /*.modal-day .status-icon-wrapper-2 { bottom: 2px; }
 
-        /* Tamaño iconos */
-        .modal-day .status-icon { font-size: 1.2rem; }
-        
-        /* Colores originales para iconos en modal */
-        .modal-day .status-icon-wrapper .fa-sun { color: var(--color-td); }
-        .modal-day .status-icon-wrapper .fa-moon { color: var(--color-tn); }
-        .modal-day .status-icon-wrapper .fa-house { color: var(--color-l); }
-        .modal-day .status-icon-wrapper .fa-house.icon2-default { color: var(--color-default-icon2); }
-        .modal-day .status-icon-wrapper .fa-plane { color: var(--color-vac); }
-        .modal-day .status-icon-wrapper .fa-hotel { color: var(--color-hotel); }
-        .modal-day .status-icon-wrapper .flag-sk-svg { width: 1.6em; height: 1.1em; }
+        .form-card {
+            background-color: white;
+            padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); width: 100%; max-width: 400px;
+        }
+        .input-field {
+            border: 1px solid #d1d5db;
+            border-radius: 8px; padding: 12px 16px;
+            width: 100%; margin-bottom: 20px; transition: border-color 0.3s;
+            color: #1f2937;
+        }
+        .input-field::placeholder { color: #9ca3af; }
+        .input-field:focus { border-color: #4f46e5; outline: none; }
+        .submit-button {
+            background-color: #4f46e5; color: white;
+            font-weight: 500; padding: 12px 16px; border-radius: 8px; width: 100%;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover { background-color: #4338ca; }
+        .error-message, .info-message {
+            font-size: 0.875rem; margin-top: 8px; text-align: center;
+        }
+        .error-message { color: #ef4444; }
+        .info-message { color: #3b82f6; } /* Azul para mensajes informativos */
 
-        .modal-day.current-day { border: 2px solid var(--color-current-day-border); font-weight: bold; }
+        .calendar-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px; margin-top: 20px;
+        }
+        .month-card {
+            background-color: white; padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); display: flex; flex-direction: column;
+            cursor: pointer; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .month-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
+        .month-header {
+            font-size: 1.125rem; font-weight: 600;
+            color: #1f2937; margin-bottom: 15px; text-align: center;
+        }
+        .days-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 4px; text-align: center; flex-grow: 1;
+        }
+        .day-name {
+            font-size: 0.8rem; padding: 6px 4px; display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 500; color: #6b7280;
+        }
+        .day-cell {
+            font-size: 0.8rem; padding: 6px 4px; display: flex;
+            align-items: center; justify-content: center;
+            color: #374151; border-radius: 6px; min-height: 32px;
+        }
+        .day-cell.empty { background-color: transparent; }
+        .day-cell.weekend-day { background-color: #f3f4f6; color: #4b5563; }
+        .day-cell.holiday-day { background-color: #fee2e2; color: #b91c1c; font-weight: 500; }
+        .day-cell.current-day {
+            background-color: #14b8a6 !important; color: white !important;
+            font-weight: bold !important; border: 2px solid #0d9488;
+        }
+        .day-cell.holiday-day.current-day { background-color: #0f766e !important; color: white !important; }
 
-        /* --- Modal Editor de Día --- */
-        #day-editor-modal .modal-content { max-width: 550px; }
-        #day-editor-modal .modal-body { display: flex; flex-direction: column; gap: 1.5rem; }
-        .editor-section { border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; }
-        .editor-section h3 { font-weight: 600; margin-bottom: 0.8rem; color: #374151; }
-        .status-selection { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
-        .status-option { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.8rem 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; text-align: center; }
-        .status-option:hover { background-color: #f3f4f6; }
-        .status-option.selected { border-color: var(--color-current-day-border); background-color: #e0f2fe; font-weight: 600; }
-        .status-option i, .status-option svg { font-size: 1.8rem; margin-bottom: 0.2rem; width: 1.8rem; height: 1.2rem; }
-        .status-option span { font-size: 0.8rem; color: #374151; }
-        .status-option.clear-option { border-style: dashed; }
-        .status-option.clear-option i { color: #9ca3af; }
-        .status-option .fa-plane { color: var(--color-vac); }
-        .status-option .fa-hotel { color: var(--color-hotel); }
-        .status-option .flag-sk-svg  /* Estilos específicos si son necesarios */ 
-        #day-editor-modal .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 0.5rem; background-color: #f9fafb; }
+        .year-navigation-container, .single-month-navigation-container {
+            display: flex; align-items: center; justify-content: center;
+            gap: 1rem; margin-bottom: 1.5rem; width:100%;
+            max-width: 900px; margin-left:auto; margin-right:auto;
+        }
+        .year-navigation-container { margin-bottom: 2rem;}
+        .single-month-navigation-container { margin-top: 1rem; }
 
+        .year-nav-button, .month-nav-button {
+            background-color: white; border: 1px solid #d1d5db;
+            color: #4b5563; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .year-nav-button:hover, .month-nav-button:hover {
+            background-color: #f9fafb; border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+        .year-nav-button svg, .month-nav-button svg { width: 20px; height: 20px; }
+
+        #calendarYearDisplay { font-size: 1.875rem; font-weight: 700; color: #1f2937; }
+        #singleMonthYearDisplay { font-size: 1.75rem; font-weight: 600; color: #1f2937; text-align: center; }
+
+        .top-right-controls {
+            position: fixed; /* Fijar en la pantalla */
+            top: 20px; right: 20px;
+            display: flex; z-index: 100; /* Asegurar que esté por encima de otros elementos */
+            gap: 10px;
+        }
+        .control-button {
+            background-color: #4f46e5; color: white;
+            font-weight: 500; padding: 0;
+            border-radius: 8px; transition: background-color 0.3s;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border: none; cursor: pointer;
+        }
+        .control-button:hover { background-color: #4338ca; }
+        .control-button svg { width: 20px; height: 20px; }
+        #logoutButton.control-button, #logoutButtonSingle.control-button { background-color: #ef4444; }
+        #logoutButton.control-button:hover, #logoutButtonSingle.control-button:hover { background-color: #dc2626; }
+
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); width: 90%;
+            max-width: 700px; max-height: 90vh; overflow-y: auto;
+            transform: scale(0.95); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px;
+        }
+        .modal-title { font-size: 1.5rem; font-weight: 600; color: #1f2937; }
+        .modal-close-button {
+            background-color: transparent; border: none; font-size: 1.8rem;
+            color: #6b7280; cursor: pointer; padding: 5px; line-height: 1;
+        }
+        .modal-close-button:hover { color: #1f2937; }
+
+        .modal-days-grid, .single-month-days-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 8px; text-align: center; width: 100%;
+            max-width: 900px; margin: 0 auto;
+        }
+        .modal-day-name, .single-month-day-name {
+            font-size: 0.85rem; font-weight: 500;
+            color: #6b7280; padding: 8px 5px; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-day-cell, .single-month-day-cell {
+            position: relative; color: #374151;
+            border-radius: 8px; min-height: 80px; padding: 4px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border: 1px solid #e5e7eb; height: auto;
+        }
+        .modal-day-number, .single-month-day-number {
+            position: absolute; top: 3px; right: 5px;
+            font-size: 0.7rem; color: #9ca3af; line-height: 1;
+        }
+        .emoji-display-area {
+            display: flex; gap: 6px; align-items: center; justify-content: center;
+            width: 100%; flex-grow: 1; margin-top: 5px;
+        }
+        .emoji-placeholder {
+            width: 24px; height: 24px; background-color: #e0e0e0;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: #374151; cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .emoji-placeholder:hover { background-color: #d1d5db; }
+        .emoji-placeholder.has-emoji { background-color: transparent; }
+
+        .modal-day-cell.empty, .single-month-day-cell.empty { background-color: #f9fafb; border-color: #f9fafb; }
+        .modal-day-cell.weekend-day, .single-month-day-cell.weekend-day { background-color: #f3f4f6; }
+        .modal-day-cell.holiday-day, .single-month-day-cell.holiday-day { background-color: #fee2e2; border-color: #fecaca; }
+        .modal-day-cell.holiday-day .modal-day-number,
+        .single-month-day-cell.holiday-day .single-month-day-number { color: #b91c1c; }
+
+        .modal-day-cell.current-day, .single-month-day-cell.current-day {
+            background-color: #ccfbf1 !important; border-color: #5eead4 !important;
+        }
+        .modal-day-cell.current-day .modal-day-number,
+        .single-month-day-cell.current-day .single-month-day-number { color: #0d9488 !important; font-weight: 600; }
+        .modal-day-cell.holiday-day.current-day,
+        .single-month-day-cell.holiday-day.current-day { background-color: #fecaca !important; border-color: #f87171 !important; }
+        .modal-day-cell.holiday-day.current-day .modal-day-number,
+        .single-month-day-cell.holiday-day.current-day .single-month-day-number { color: #b91c1c !important; }
+
+        .emoji-picker-panel {
+            position: absolute; background-color: white;
+            border: 1px solid #d1d5db; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 10px;
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            gap: 8px; z-index: 1001; display: none;
+        }
+        .emoji-picker-panel span {
+            font-size: 20px; cursor: pointer; padding: 4px;
+            border-radius: 4px; text-align: center; color: #1f2937;
+        }
+        .emoji-picker-panel span:hover { background-color: #f3f4f6; }
+
+        /* Checkbox para mantener sesión */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+            height: 16px; width: 16px;
+            border-radius: 4px;
+            border-color: #d1d5db;
+        }
+        .checkbox-container label {
+            font-size: 0.875rem;
+            color: #374151;
+        }
     </style>
 </head>
 <body>
-    <div id="calendar-app">
-        <div class="controls-container">
-            <div class="year-navigation">
-                <button id="prev-year" class="button button-secondary" aria-label="Año anterior"><i class="fas fa-chevron-left"></i></button>
-                <span id="current-year" aria-live="polite">2025</span>
-                <button id="next-year" class="button button-secondary" aria-label="Año siguiente"><i class="fas fa-chevron-right"></i></button>
+    <div class="app-container">
+        <div id="loginPage" class="login-container fade-in">
+            <div class="form-card">
+                <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Calendario</h1>
+                <p class="text-center text-gray-600 mb-8">Inicia sesión para acceder a tu calendario.</p>
+                <form id="loginForm">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" name="email" required class="input-field" placeholder="tu@email.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" id="password" name="password" required class="input-field" placeholder="••••••••">
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <label for="rememberMe">Mantener la sesión iniciada</label>
+                    </div>
+                    <button type="submit" class="submit-button">Iniciar Sesión</button>
+                    <p id="authMessage" class="info-message" style="display: none;"></p> </form>
             </div>
         </div>
-        <div id="calendar-container" class="calendar-container"></div>
-    </div>
 
-    <div id="month-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                 <h2 id="modal-title" class="modal-title">Mes</h2>
-                 <button id="month-modal-close-btn" class="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+        <div id="calendarPage" class="calendar-container" style="display: none;">
+            <div class="top-right-controls">
+                <button id="toggleViewButton" class="control-button" aria-label="Cambiar Vista">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-3.75h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
+                </button>
+                <button id="logoutButton" class="control-button" aria-label="Cerrar Sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+                    </svg>
+                </button>
             </div>
-            <div id="modal-body" class="modal-body">
+            <div class="year-navigation-container">
+                <button id="prevYearBtn" class="year-nav-button" aria-label="Año anterior">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                </button>
+                <h1 id="calendarYearDisplay"></h1>
+                <button id="nextYearBtn" class="year-nav-button" aria-label="Año siguiente">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                </button>
+            </div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+
+        <div id="singleMonthViewPage" class="single-month-view-container" style="display: none;">
+            <div class="top-right-controls">
+                 <button id="toggleViewButtonSingle" class="control-button" aria-label="Cambiar Vista">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                <button id="logoutButtonSingle" class="control-button" aria-label="Cerrar Sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+                    </svg>
+                </button>
+            </div>
+            <div class="single-month-navigation-container">
+                <button id="prevMonthSingleBtn" class="month-nav-button" aria-label="Mes anterior">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                </button>
+                <h2 id="singleMonthYearDisplay" class="text-2xl font-semibold"></h2>
+                <button id="nextMonthSingleBtn" class="month-nav-button" aria-label="Mes siguiente">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                </button>
+            </div>
+            <div id="singleMonthCalendarGrid" class="single-month-days-grid"></div>
+        </div>
+
+        <div id="monthModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle" class="modal-title"></h2>
+                    <button id="modalCloseButton" class="modal-close-button" aria-label="Cerrar modal">&times;</button>
                 </div>
+                <div id="modalCalendarGrid" class="modal-days-grid"></div>
+            </div>
         </div>
-    </div>
 
-    <div id="day-editor-modal" class="modal-overlay">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h2 id="day-editor-title" class="modal-title">Editar Día</h2>
-                 <button id="day-editor-close-btn" class="modal-close-btn" aria-label="Cerrar editor">&times;</button>
-             </div>
-             <div id="day-editor-body" class="modal-body">
-                 <div class="editor-section">
-                     <h3>Calendario Yei(Horario Base)</h3>
-                     <div id="status-selection-1" class="status-selection">
-                         </div>
-                 </div>
-                  <div class="editor-section">
-                     <h3>Calendario Mariana (Extra)</h3>
-                     <div id="status-selection-2" class="status-selection">
-                         </div>
-                 </div>
-             </div>
-              <div class="modal-footer">
-                  <button id="day-editor-cancel" class="button button-secondary">Cancelar</button>
-                  <button id="day-editor-save" class="button button-primary">Guardar</button>
-              </div>
-         </div>
+        <div id="emojiPickerPanel" class="emoji-picker-panel"></div>
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
-        // --- Elementos DOM ---
-        const calendarAppDiv = document.getElementById('calendar-app');
-        const calendarContainer = document.getElementById('calendar-container');
-        const currentYearSpan = document.getElementById('current-year');
-        const prevYearBtn = document.getElementById('prev-year');
-        const nextYearBtn = document.getElementById('next-year');
-        const monthModal = document.getElementById('month-modal');
-        const monthModalTitle = document.getElementById('modal-title');
-        const monthModalBody = document.getElementById('modal-body');
-        const monthModalCloseBtn = document.getElementById('month-modal-close-btn');
-        const dayEditorModal = document.getElementById('day-editor-modal');
-        const dayEditorTitle = document.getElementById('day-editor-title');
-        const dayEditorBody = document.getElementById('day-editor-body');
-        const statusSelectionDiv1 = document.getElementById('status-selection-1');
-        const statusSelectionDiv2 = document.getElementById('status-selection-2');
-        const dayEditorSaveBtn = document.getElementById('day-editor-save');
-        const dayEditorCancelBtn = document.getElementById('day-editor-cancel');
-        const dayEditorCloseBtn = document.getElementById('day-editor-close-btn');
-
-        // --- Estado de la Aplicación ---
-        let displayedYear = new Date().getFullYear();
-        let dayData = {}; // { "YYYY-MM-DD": { icon1: '...', icon2: '...' } }
-        let selectedDateForEdit = null;
-        const today = new Date();
-        today.setHours(0,0,0,0);
-
-        // --- Constantes y Configuración ---
-        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const dayNames = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
-        const baseWorkPattern = ['TD', 'TD', 'TD', 'L', 'L', 'TD', 'TD', 'L', 'L', 'L', 'TN', 'TN', 'L', 'L', 'TN', 'TN', 'TN', 'L', 'L', 'TN', 'TN', 'L', 'L', 'L', 'TD', 'TD', 'L', 'L'];
-        const patternLength = baseWorkPattern.length;
-        const sequenceStartDate = new Date(2025, 0, 3);
-        const utcStartDate = new Date(Date.UTC(sequenceStartDate.getFullYear(), sequenceStartDate.getMonth(), sequenceStartDate.getDate()));
-
-        const BASE_STATUS_OPTIONS = {
-            'TD': { label: 'Día', icon: 'fa-sun' },
-            'TN': { label: 'Noche', icon: 'fa-moon' },
-            'L': { label: 'Libre', icon: 'fa-house' }
+       const firebaseConfig = {
+          apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
+          authDomain: "calentonqui.firebaseapp.com",
+          databaseURL: "https://calentonqui-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "calentonqui",
+          storageBucket: "calentonqui.firebasestorage.app",
+          messagingSenderId: "386155002525",
+          appId: "1:386155002525:web:75a074d782f07e285a7274"
         };
-        const DEFAULT_ICON2_STATUS = 'HOME_PURPLE';
-        const DEFAULT_ICON2_OPTIONS = {
-             [DEFAULT_ICON2_STATUS]: { label: 'Casa', icon: 'fa-house', class: 'icon2-default' }
+        // // FIREBASE: Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const fbAuth = firebase.auth();
+        const fbDb = firebase.firestore();
+        let currentUserId = null; // Se establecerá después del login
+
+        // Emails permitidos (para la lógica de este ejemplo)
+        const allowedEmails = ['usuario1@ejemplo.com', 'usuario2@ejemplo.com'];
+        const commonPassword = 'tonqui'; // Contraseña común para los emails permitidos
+
+        // Elementos del DOM
+        const loginPage = document.getElementById('loginPage');
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const authMessage = document.getElementById('authMessage'); // Cambiado de errorMessage a authMessage
+
+        const calendarPage = document.getElementById('calendarPage');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const calendarYearDisplay = document.getElementById('calendarYearDisplay');
+        const prevYearBtn = document.getElementById('prevYearBtn');
+        const nextYearBtn = document.getElementById('nextYearBtn');
+        const logoutButton = document.getElementById('logoutButton');
+        const toggleViewButton = document.getElementById('toggleViewButton');
+
+        const singleMonthViewPage = document.getElementById('singleMonthViewPage');
+        const singleMonthYearDisplay = document.getElementById('singleMonthYearDisplay');
+        const prevMonthSingleBtn = document.getElementById('prevMonthSingleBtn');
+        const nextMonthSingleBtn = document.getElementById('nextMonthSingleBtn');
+        const singleMonthCalendarGrid = document.getElementById('singleMonthCalendarGrid');
+        const toggleViewButtonSingle = document.getElementById('toggleViewButtonSingle');
+        const logoutButtonSingle = document.getElementById('logoutButtonSingle');
+
+        const monthModal = document.getElementById('monthModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCalendarGrid = document.getElementById('modalCalendarGrid');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+
+        const emojiPickerPanel = document.getElementById('emojiPickerPanel');
+        const availableEmojis = ['😀', '😂', '😍', '🤔', '🎉', '🚀', '❤️', '👍', '😊', '🥳', '🌟', '🍕', '⚽️', '✈️', '💻', '📚', '💰', '💡', ''];
+
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
+
+        let currentDisplayedYear = new Date().getFullYear();
+        let currentSingleViewYear = new Date().getFullYear();
+        let currentSingleViewMonth = new Date().getMonth();
+
+        let dayEmojis = {}; // Local cache for emojis, will be synced with Firestore
+        let currentEditingPlaceholder = null;
+        let currentEditingDayKey = null;
+        let currentEditingPlaceholderKey = null;
+
+        const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
+        const workSequencePattern = [
+            'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
+            'TN', 'TN', 'L',  'L',  'TN', 'TN', 'TN', 'L',  'L',  'TN',
+            'TN', 'L',  'L',  'L',  'TD', 'TD', 'L',  'L'
+        ];
+        const workEmojisMap = { 'L': '⚽️', 'TD': '📚', 'TN': '💻' };
+
+        const berlinHolidays = {
+            2024: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 2, day: 29, name: "Karfreitag" }, { month: 3, day: 1, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 9, name: "Christi Himmelfahrt" }, { month: 4, day: 20, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
+            2025: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 3, day: 18, name: "Karfreitag" }, { month: 3, day: 21, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 8, name: "80. Jahrestag der Befreiung" }, { month: 4, day: 29, name: "Christi Himmelfahrt" }, { month: 5, day: 9, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
+            2026: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 3, day: 3, name: "Karfreitag" }, { month: 3, day: 6, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 14, name: "Christi Himmelfahrt" }, { month: 4, day: 25, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }]
         };
-        const EXTRA_STATUS_OPTIONS = {
-            'VAC': { label: 'Vacaciones', icon: 'fa-plane' },
-            'HOTEL': { label: 'Hotel', icon: 'fa-hotel' },
-            'FLAG_SK': { label: 'Eslovaquia', icon: 'flag-sk-svg' }
-        };
-        const FLAG_SK_SVG = `<svg class="flag-sk-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6"><path fill="#fff" d="M0 0h9v6H0z"/><path fill="var(--color-flag-sk-blue)" d="M0 2h9v4H0z"/><path fill="var(--color-flag-sk-red)" d="M0 4h9v2H0z"/><g transform="translate(2.75 1.5) scale(.0625)"><path fill="#fff" d="M16 0c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0z"/><path fill="var(--color-flag-sk-blue)" d="M16 4.445c-6.375 0-11.555 5.18-11.555 11.555S9.625 27.555 16 27.555 27.555 22.375 27.555 16 22.375 4.445 16 4.445z"/><path fill="#fff" d="M16 10h-4v4h4v4h4v-4h4v-4h-4z"/><path fill="var(--color-flag-sk-red)" d="M16 11h-3v3h3v3h2v-3h3v-3h-3z"/></g></svg>`;
 
-        // --- Configuración de Firebase ---
-        // ** IMPORTANTE: Reemplaza esto con la configuración de tu proyecto Firebase **
-        const firebaseConfig = {
-            apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
-            authDomain: "calentonqui.firebaseapp.com",
-            databaseURL: "https://calentonqui-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "calentonqui",
-            storageBucket: "calentonqui.firebasestorage.app",
-            messagingSenderId: "386155002525",
-            appId: "1:386155002525:web:75a074d782f07e285a7274"
-            };
-
-        // --- Inicialización de Firebase ---
-        let app;
-        let db;
-        let calendarRef; // Referencia a la base de datos para el año actual
-
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            console.log("Firebase inicializado correctamente.");
-        } catch (error) {
-            console.error("Error inicializando Firebase:", error);
-            alert("Error conectando con la base de datos. El calendario no funcionará online.");
-            // Podríamos deshabilitar botones o mostrar un mensaje permanente
+        function isHoliday(year, month, day) {
+            const holidaysForYear = berlinHolidays[year];
+            if (!holidaysForYear) return false;
+            return holidaysForYear.some(h => h.month === month && h.day === day);
         }
 
-        // --- Funciones de Base de Datos Firebase ---
-
-        // ** MODIFICADO: Cargar datos desde Firebase **
-        function loadData(year) {
-            console.log(`Intentando cargar datos para el año ${year} desde Firebase...`);
-            if (!db) {
-                console.error("La base de datos Firebase no está inicializada.");
-                dayData = {}; // Usar datos vacíos si no hay conexión
-                generateAnnualCalendar(year); // Generar calendario con datos vacíos
-                return;
-            }
-            calendarRef = db.ref(`calendars/${year}`); // Referencia específica del año
-
-            // Escuchar cambios en tiempo real
-            calendarRef.on('value', (snapshot) => {
-                const dataFromFirebase = snapshot.val();
-                dayData = dataFromFirebase || {}; // Usar datos de Firebase o un objeto vacío
-                console.log(`Datos recibidos/actualizados para ${year}:`, dayData);
-                // Volver a generar el calendario completo o solo actualizar los días afectados
-                // Por simplicidad, regeneramos todo el calendario anual al recibir datos
-                generateAnnualCalendarUI(year); // Llamar a la función que solo dibuja la UI
-            }, (error) => {
-                console.error(`Error al leer datos de Firebase para el año ${year}:`, error);
-                alert("Error al leer los datos del calendario. Puede que no veas la información más reciente.");
-                dayData = {}; // Resetear datos locales en caso de error de lectura
-                generateAnnualCalendarUI(year); // Intentar dibujar con datos vacíos
-            });
+        /**
+         * Muestra un mensaje en el área de autenticación.
+         * @param {string} message - El mensaje a mostrar.
+         * @param {boolean} isError - True si es un mensaje de error, false para informativo.
+         */
+        function showAuthMessage(message, isError = false) {
+            authMessage.textContent = message;
+            authMessage.className = isError ? 'error-message' : 'info-message';
+            authMessage.style.display = 'block';
         }
 
-        // ** MODIFICADO: Guardar datos directamente en Firebase **
-        function saveDayDataToFirebase(dateString, dayInfo) {
-            console.log(`Guardando datos para ${dateString} en Firebase:`, dayInfo);
-            if (!db) {
-                console.error("No se puede guardar: la base de datos Firebase no está inicializada.");
-                alert("Error: No se pudo guardar el cambio. Comprueba la conexión.");
-                return;
-            }
-            // Referencia al día específico dentro del año
-            const dayRef = db.ref(`calendars/${displayedYear}/${dateString}`);
-
-            if (Object.keys(dayInfo).length === 0) {
-                // Si no hay datos para guardar (se limpiaron ambos iconos), eliminar la entrada del día
-                dayRef.remove()
-                    .then(() => {
-                        console.log(`Datos eliminados para ${dateString}`);
-                        // No es necesario re-renderizar aquí si 'onValue' está activo
-                    })
-                    .catch((error) => {
-                        console.error(`Error eliminando datos para ${dateString}:`, error);
-                        alert("Error al guardar el cambio (eliminación).");
-                    });
-            } else {
-                // Guardar/actualizar los datos del día
-                dayRef.set(dayInfo)
-                    .then(() => {
-                        console.log(`Datos guardados correctamente para ${dateString}`);
-                        // No es necesario re-renderizar aquí si 'onValue' está activo
-                    })
-                    .catch((error) => {
-                        console.error(`Error guardando datos para ${dateString}:`, error);
-                        alert("Error al guardar el cambio.");
-                    });
-            }
-        }
-
-        // --- Lógica Horario Base (sin cambios) ---
-        function getDefaultStatusForDay(dateString) {
-            const [year, month, day] = dateString.split('-').map(Number);
-            const currentDate = new Date(Date.UTC(year, month - 1, day));
-            if (currentDate >= utcStartDate) {
-                const timeDiff = currentDate.getTime() - utcStartDate.getTime();
-                const dayDifference = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                const patternIndex = dayDifference % patternLength;
-                return baseWorkPattern[patternIndex];
-            } else { return 'L'; }
-        }
-
-        // --- Funciones de Renderizado ---
-        function createDayCellHTML(day, monthIndex, year, isModal = false) {
-             const date = new Date(year, monthIndex, day); date.setHours(0,0,0,0);
-             const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-             const isCurrentDay = date.getTime() === today.getTime();
-             const cellClass = isModal ? 'modal-day' : 'day';
-             let cellHTML = `<div class="${cellClass}${isCurrentDay ? ' current-day' : ''}" data-date="${dateString}">`;
-             if (isModal) {
-                 cellHTML += `<span>${day}</span><div class="icons-wrapper">`;
-                 cellHTML += `<span class="status-icon-wrapper status-icon-wrapper-1"></span>`;
-                 cellHTML += `<span class="status-icon-wrapper status-icon-wrapper-2"></span>`;
-                 cellHTML += `</div>`;
-             } else {
-                 cellHTML += `<span>${day}</span><div class="icon-container"><span class="main-icon-wrapper"></span><span class="secondary-indicator-wrapper"></span></div>`;
-             }
-             cellHTML += `</div>`; return cellHTML;
-        }
-
-        function applyDayMarkings(dayCell) {
+        // FIREBASE: Cargar emojis desde Firestore para el usuario actual
+        async function loadDayEmojisFromFirestore() {
+            if (!currentUserId) return;
+            showAuthMessage("Cargando emojis...", false);
             try {
-                const dateString = dayCell.dataset.date;
-                if (!dateString) return;
-                // ** Usar dayData global que se actualiza con onValue **
-                const dayInfo = dayData[dateString] || {};
-                const isModal = dayCell.classList.contains('modal-day');
+                const emojisSnapshot = await fbDb.collection('users').doc(currentUserId).collection('emojis').get();
+                dayEmojis = {}; // Reset local cache
+                emojisSnapshot.forEach(doc => {
+                    dayEmojis[doc.id] = doc.data();
+                });
+                showAuthMessage("Emojis cargados.", false);
+                setTimeout(() => authMessage.style.display = 'none', 2000);
+                // Regenerar la vista actual después de cargar los emojis
+                if (calendarPage.style.display === 'flex') generateCalendar(currentDisplayedYear);
+                if (singleMonthViewPage.style.display === 'flex') generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
 
-                const defaultStatusIcon1 = getDefaultStatusForDay(dateString);
-                const defaultStatusIcon2 = DEFAULT_ICON2_STATUS;
-                const finalStatusIcon1 = dayInfo.icon1 || defaultStatusIcon1;
-                const finalStatusIcon2 = dayInfo.icon2 || defaultStatusIcon2;
-
-                let icon1Info = EXTRA_STATUS_OPTIONS[finalStatusIcon1] || BASE_STATUS_OPTIONS[finalStatusIcon1];
-                let icon2Info = EXTRA_STATUS_OPTIONS[finalStatusIcon2] || DEFAULT_ICON2_OPTIONS[finalStatusIcon2];
-
-                if (isModal) {
-                    const iconWrapper1 = dayCell.querySelector('.status-icon-wrapper-1');
-                    const iconWrapper2 = dayCell.querySelector('.status-icon-wrapper-2');
-
-                    if (iconWrapper1) {
-                        iconWrapper1.innerHTML = '';
-                        if (icon1Info) {
-                            const titleText = icon1Info.label || 'Icono 1';
-                            if (finalStatusIcon1 === 'FLAG_SK') {
-                                iconWrapper1.innerHTML = FLAG_SK_SVG;
-                            } else {
-                                iconWrapper1.innerHTML = `<i class="fas ${icon1Info.icon} status-icon ${icon1Info.class || ''}" title="${titleText}"></i>`;
-                            }
-                        }
-                    } else { console.warn("Icon wrapper 1 no encontrado", dayCell); }
-
-                    if (iconWrapper2) {
-                        iconWrapper2.innerHTML = '';
-                        if (icon2Info) {
-                             const titleText = icon2Info.label || 'Icono 2';
-                             if (finalStatusIcon2 === 'FLAG_SK') {
-                                 iconWrapper2.innerHTML = FLAG_SK_SVG;
-                             } else {
-                                 iconWrapper2.innerHTML = `<i class="fas ${icon2Info.icon} status-icon ${icon2Info.class || ''}" title="${titleText}"></i>`;
-                             }
-                        }
-                    } else { console.warn("Icon wrapper 2 no encontrado", dayCell); }
-
-                } else {
-                    const mainIconWrapper = dayCell.querySelector('.main-icon-wrapper');
-                    const secondaryIndicatorWrapper = dayCell.querySelector('.secondary-indicator-wrapper');
-
-                    if (mainIconWrapper) {
-                        mainIconWrapper.innerHTML = '';
-                        if (icon1Info) {
-                            const titleText = icon1Info.label || 'Icono 1';
-                             if (finalStatusIcon1 === 'FLAG_SK') {
-                                 mainIconWrapper.innerHTML = `<i class="fas fa-flag main-icon" title="${titleText}"></i>`;
-                             } else {
-                                 mainIconWrapper.innerHTML = `<i class="fas ${icon1Info.icon} main-icon" title="${titleText}"></i>`;
-                             }
-                        }
-                    } else { console.warn("Main icon wrapper no encontrado", dayCell); }
-
-                    if (secondaryIndicatorWrapper) {
-                        secondaryIndicatorWrapper.innerHTML = '';
-                        if (dayInfo.icon2) {
-                            secondaryIndicatorWrapper.innerHTML = `<span class="secondary-indicator" title="Estado extra añadido"></span>`;
-                        }
-                    } else { console.warn("Secondary indicator wrapper no encontrado", dayCell); }
-                }
             } catch (error) {
-                 console.error(`Error general en applyDayMarkings para celda ${dayCell?.dataset?.date}:`, error, error.stack, dayCell);
+                console.error("Error loading emojis from Firestore: ", error);
+                showAuthMessage("Error al cargar emojis.", true);
+            }
+        }
+
+        // FIREBASE: Guardar emoji para un día específico en Firestore
+        async function saveEmojiForDayKeyToFirestore(dayKey, emojiDataForDay) {
+            if (!currentUserId || !dayKey) return;
+            try {
+                if (emojiDataForDay && Object.keys(emojiDataForDay).length > 0) {
+                    await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).set(emojiDataForDay);
+                } else {
+                    // Si no hay emojis para ese día, eliminar el documento de Firestore
+                    await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).delete();
+                }
+                // console.log(`Emoji for ${dayKey} saved to Firestore.`);
+            } catch (error) {
+                console.error("Error saving emoji to Firestore: ", error);
+                showAuthMessage("Error al guardar emoji online.", true);
             }
         }
 
 
-        function generateSingleMonthGrid(year, monthIndex) {
-             let gridHTML = `<div class="modal-days-grid">`;
-             dayNames.forEach(dayName => { gridHTML += `<div class="modal-day-header">${dayName}</div>`; });
-             const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-             const firstDayOfMonth = new Date(year, monthIndex, 1).getDay();
-             const offset = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
-             for (let i = 0; i < offset; i++) { gridHTML += `<div class="modal-day empty"></div>`; }
-             for (let day = 1; day <= daysInMonth; day++) {
-                 gridHTML += createDayCellHTML(day, monthIndex, year, true);
-             }
-             gridHTML += `</div>`;
-             const tempDiv = document.createElement('div');
-             tempDiv.innerHTML = gridHTML;
-             return tempDiv.firstElementChild;
-        }
+        // --- MANEJADORES DE EVENTOS ---
 
-        // ** MODIFICADO: Separar generación de UI de carga de datos **
-        function generateAnnualCalendarUI(year) {
-            console.log("Generando UI del calendario para el año:", year);
-            calendarContainer.innerHTML = ''; // Limpiar contenedor principal
-            currentYearSpan.textContent = year; // Actualizar año en UI
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
-            let calendarHTML = '';
-            for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
-                calendarHTML += `<div class="month" data-month="${monthIndex}" data-year="${year}"><div class="month-header">${monthNames[monthIndex]}</div><div class="days-grid">`;
-                dayNames.forEach(dayName => { calendarHTML += `<div class="day-header">${dayName.charAt(0)}</div>`; });
-                const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-                const firstDayOfMonth = new Date(year, monthIndex, 1).getDay();
-                const offset = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
-                for (let i = 0; i < offset; i++) { calendarHTML += `<div class="day empty"></div>`; }
-                for (let day = 1; day <= daysInMonth; day++) {
-                    calendarHTML += createDayCellHTML(day, monthIndex, year, false);
+            if (!allowedEmails.includes(email) || password !== commonPassword) {
+                 showAuthMessage('Email o contraseña incorrectos para este demo.', true);
+                 // En una app real, no darías esta pista, solo "credenciales incorrectas".
+                 // Aquí es para guiar al usuario a usar los emails permitidos.
+                 // Para que funcione con Firebase, estas cuentas deben existir en Firebase Auth.
+                 if (!allowedEmails.includes(email)) {
+                    console.warn(`Intento de login con email no permitido: ${email}. Asegúrate de que ${email} (con contraseña 'tonqui') existe en tu Firebase Authentication.`);
                  }
-                calendarHTML += `</div></div>`;
+                return;
             }
-            calendarContainer.innerHTML = calendarHTML;
-
-            // Aplicar marcadores usando los datos actuales (dayData)
-            if (calendarContainer.childElementCount > 0) {
-                 console.log("Aplicando marcadores a la vista anual...");
-                 calendarContainer.querySelectorAll('.day[data-date]').forEach(applyDayMarkings);
-                 console.log("Marcadores aplicados a la vista anual.");
-            }
-        }
-
-        function populateDayEditor(dateString) {
-            selectedDateForEdit = dateString;
-            // Usar dayData global que se actualiza con onValue
-            const dayInfo = dayData[dateString] || {};
-            const currentStatusIcon1 = dayInfo.icon1;
-            const currentStatusIcon2 = dayInfo.icon2;
-            const dateObj = new Date(dateString + 'T00:00:00');
-            dayEditorTitle.textContent = `Editar ${dateObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}`;
-
-            // --- Rellenar sección Icono 1 ---
-            statusSelectionDiv1.innerHTML = '';
-            Object.entries(EXTRA_STATUS_OPTIONS).forEach(([code, { label, icon }]) => {
-                const isSelected = currentStatusIcon1 === code;
-                let iconHTML = icon === 'flag-sk-svg' ? FLAG_SK_SVG : `<i class="fas ${icon}"></i>`;
-                statusSelectionDiv1.innerHTML += `<div class="status-option ${isSelected ? 'selected' : ''}" data-status="${code}">${iconHTML}<span>${label}</span></div>`;
-            });
-            const clearSelected1 = !currentStatusIcon1;
-            statusSelectionDiv1.innerHTML += `<div class="status-option clear-option ${clearSelected1 ? 'selected' : ''}" data-status=""><i class="fas fa-eraser"></i><span>Limpiar (Base)</span></div>`;
-
-            // --- Rellenar sección Icono 2 ---
-            statusSelectionDiv2.innerHTML = '';
-            Object.entries(EXTRA_STATUS_OPTIONS).forEach(([code, { label, icon }]) => {
-                const isSelected = currentStatusIcon2 === code;
-                 let iconHTML = icon === 'flag-sk-svg' ? FLAG_SK_SVG : `<i class="fas ${icon}"></i>`;
-                statusSelectionDiv2.innerHTML += `<div class="status-option ${isSelected ? 'selected' : ''}" data-status="${code}">${iconHTML}<span>${label}</span></div>`;
-            });
-            const clearSelected2 = !currentStatusIcon2;
-            statusSelectionDiv2.innerHTML += `<div class="status-option clear-option ${clearSelected2 ? 'selected' : ''}" data-status=""><i class="fas fa-eraser"></i><span>Limpiar (Casa)</span></div>`;
-
-
-            // --- Añadir listeners a AMBAS secciones ---
-             document.querySelectorAll('.status-option').forEach(option => {
-                 option.addEventListener('click', (e) => {
-                     const section = e.currentTarget.closest('.status-selection');
-                     section.querySelector('.selected')?.classList.remove('selected');
-                     e.currentTarget.classList.add('selected');
-                 });
-             });
-        }
-
-        // --- Handlers de Eventos ---
-        prevYearBtn.addEventListener('click', () => {
-             displayedYear--;
-             loadData(displayedYear); // Cargar datos para el nuevo año
-        });
-        nextYearBtn.addEventListener('click', () => {
-             displayedYear++;
-             loadData(displayedYear); // Cargar datos para el nuevo año
-        });
-
-        // Abrir Modal Mes
-        calendarContainer.addEventListener('click', (event) => {
-            const monthDiv = event.target.closest('.month');
-            if (!monthDiv) return;
-
-            const currentMonthModal = document.getElementById('month-modal');
-            const currentMonthModalTitle = document.getElementById('modal-title');
-            const currentModalBody = document.getElementById('modal-body');
-            if (!currentMonthModal || !currentMonthModalTitle || !currentModalBody) { console.error("CRITICAL: Modal elements not found!"); return; }
+            showAuthMessage("Iniciando sesión...", false);
 
             try {
-                const monthIndex = parseInt(monthDiv.dataset.month);
-                const year = parseInt(monthDiv.dataset.year);
-                if (isNaN(monthIndex) || isNaN(year)) { console.error("Invalid month/year"); return; }
+                await fbAuth.setPersistence(persistence);
+                const userCredential = await fbAuth.signInWithEmailAndPassword(email, password);
+                // El observer onAuthStateChanged se encargará del resto (navegación, carga de datos)
+                // No es necesario llamar a showCalendarPage directamente aquí si onAuthStateChanged está bien configurado.
+                localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
 
-                currentMonthModalTitle.textContent = `${monthNames[monthIndex]} ${year}`;
-                currentModalBody.innerHTML = '';
-                const monthGridElement = generateSingleMonthGrid(year, monthIndex);
+            } catch (error) {
+                console.error("Error de inicio de sesión:", error);
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                     showAuthMessage('Email o contraseña incorrectos. Asegúrate de que las cuentas de prueba existen en Firebase.', true);
+                } else {
+                    showAuthMessage('Error al iniciar sesión: ' + error.message, true);
+                }
+            }
+        });
 
-                if (monthGridElement instanceof Node) {
-                    currentModalBody.appendChild(monthGridElement);
-                    // ** Usar los datos actuales (dayData) para marcar los días **
-                    const modalDays = currentModalBody.querySelectorAll('.modal-day[data-date]');
-                    if (modalDays) {
-                         modalDays.forEach(applyDayMarkings);
+        // FIREBASE: Observer para el estado de autenticación
+        fbAuth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                showAuthMessage("Sesión iniciada.", false);
+                setTimeout(() => authMessage.style.display = 'none', 1500);
+
+                loginPage.style.display = 'none';
+                // Decide qué vista mostrar. Por defecto, la anual.
+                // Podrías guardar la última vista visitada en localStorage si quieres.
+                calendarPage.style.display = 'flex';
+                singleMonthViewPage.style.display = 'none';
+                calendarPage.classList.add('fade-in');
+
+                await loadDayEmojisFromFirestore(); // Carga los emojis del usuario
+                generateCalendar(currentDisplayedYear); // Genera la vista anual por defecto
+
+                if (currentDisplayedYear === new Date().getFullYear()) {
+                    const currentMonthElement = document.getElementById('currentMonthCard');
+                    if (currentMonthElement) {
+                        setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
                     }
-                    currentMonthModal.classList.add('visible');
-                } else { console.error("generateSingleMonthGrid failed"); }
-            } catch (error) { console.error("Error opening month modal:", error, error.stack); }
-        });
+                }
+                 // Restaurar el estado del checkbox "Mantener sesión"
+                const remembered = localStorage.getItem('calendarRememberMe') === 'true';
+                rememberMeCheckbox.checked = remembered;
 
+            } else {
+                currentUserId = null;
+                dayEmojis = {}; // Limpiar emojis locales al cerrar sesión
 
-        // Cerrar Modal Mes
-        monthModalCloseBtn.addEventListener('click', () => {
-             const currentMonthModal = document.getElementById('month-modal');
-             if (currentMonthModal) currentMonthModal.classList.remove('visible');
-        });
-        monthModal.addEventListener('click', (event) => {
-             if (event.target === document.getElementById('month-modal')) {
-                 document.getElementById('month-modal').classList.remove('visible');
-             }
-        });
-
-
-        // Abrir Modal Editor Día
-        monthModalBody.addEventListener('click', (event) => {
-             const currentDayEditorModal = document.getElementById('day-editor-modal');
-             if (!currentDayEditorModal) { console.error("Error: Editor modal element not found."); return; }
-             const dayDiv = event.target.closest('.modal-day:not(.empty)');
-             if (dayDiv) {
-                 const dateString = dayDiv.dataset.date;
-                 populateDayEditor(dateString);
-                 currentDayEditorModal.classList.add('visible');
-             }
-        });
-
-
-        // ** MODIFICADO: Guardar Cambios Editor Día usando Firebase **
-        dayEditorSaveBtn.addEventListener('click', () => {
-            const currentDayEditorModal = document.getElementById('day-editor-modal');
-            if (!currentDayEditorModal) { console.error("Error: dayEditorModal not available on save."); return; }
-            if (!selectedDateForEdit) { console.error("Error: No date selected for saving."); return; }
-
-            const selectedStatusOption1 = statusSelectionDiv1.querySelector('.status-option.selected');
-            const selectedStatusOption2 = statusSelectionDiv2.querySelector('.status-option.selected');
-
-            const newStatus1 = selectedStatusOption1 ? selectedStatusOption1.dataset.status : null;
-            const newStatus2 = selectedStatusOption2 ? selectedStatusOption2.dataset.status : null;
-
-            // Crear objeto con los datos a guardar/actualizar
-            let dayInfoUpdate = {};
-            if (newStatus1 === "") {
-                 dayInfoUpdate.icon1 = null; // Usar null para indicar eliminación en Firebase
-            } else if (newStatus1 !== null) {
-                 dayInfoUpdate.icon1 = newStatus1;
+                loginPage.style.display = 'flex';
+                calendarPage.style.display = 'none';
+                singleMonthViewPage.style.display = 'none';
+                monthModal.classList.remove('active');
+                loginPage.classList.add('fade-in');
+                hideEmojiPicker();
+                emailInput.value = ''; // Limpiar campos de login
+                passwordInput.value = '';
+                showAuthMessage("Sesión cerrada o no iniciada.", false);
+                setTimeout(() => authMessage.style.display = 'none', 2000);
             }
-
-             if (newStatus2 === "") {
-                 dayInfoUpdate.icon2 = null; // Usar null para indicar eliminación
-            } else if (newStatus2 !== null) {
-                 dayInfoUpdate.icon2 = newStatus2;
-            }
-
-            // Si ambos son null, significa que queremos borrar la entrada del día
-            const shouldDelete = !dayInfoUpdate.icon1 && !dayInfoUpdate.icon2;
-
-            // Llamar a la función para guardar en Firebase
-            saveDayDataToFirebase(selectedDateForEdit, shouldDelete ? {} : dayInfoUpdate); // Pasar objeto vacío si se debe eliminar
-
-            // La actualización visual ocurrirá automáticamente gracias al listener 'onValue'
-            currentDayEditorModal.classList.remove('visible');
-            selectedDateForEdit = null;
         });
 
 
-        // Cancelar / Cerrar Editor Día
-        dayEditorCancelBtn.addEventListener('click', () => {
-             const currentDayEditorModal = document.getElementById('day-editor-modal');
-             if (currentDayEditorModal) currentDayEditorModal.classList.remove('visible');
-        });
-        dayEditorCloseBtn.addEventListener('click', () => {
-             const currentDayEditorModal = document.getElementById('day-editor-modal');
-             if (currentDayEditorModal) currentDayEditorModal.classList.remove('visible');
-        });
-        dayEditorModal.addEventListener('click', (event) => {
-             const currentDayEditorModal = document.getElementById('day-editor-modal');
-             if (event.target === currentDayEditorModal) {
-                  currentDayEditorModal.classList.remove('visible');
-             }
-        });
+        function handleLogout() {
+            showAuthMessage("Cerrando sesión...", false);
+            fbAuth.signOut().catch(error => {
+                console.error("Error al cerrar sesión:", error);
+                showAuthMessage("Error al cerrar sesión.", true);
+            });
+        }
+        logoutButton.addEventListener('click', handleLogout);
+        logoutButtonSingle.addEventListener('click', handleLogout);
 
 
-         document.addEventListener('keydown', (event) => {
-             const currentDayEditorModal = document.getElementById('day-editor-modal');
-             const currentMonthModal = document.getElementById('month-modal');
-             if (event.key === 'Escape') {
-                 if (currentDayEditorModal && currentDayEditorModal.classList.contains('visible')) {
-                      currentDayEditorModal.classList.remove('visible');
-                 } else if (currentMonthModal && currentMonthModal.classList.contains('visible')) {
-                      currentMonthModal.classList.remove('visible');
-                 }
-             }
-         });
+        prevYearBtn.addEventListener('click', function() {
+            currentDisplayedYear--;
+            generateCalendar(currentDisplayedYear);
+        });
+        nextYearBtn.addEventListener('click', function() {
+            currentDisplayedYear++;
+            generateCalendar(currentDisplayedYear);
+        });
 
-        // --- Inicialización App ---
-        function initApp() {
-            console.log(`Iniciando calendario simplificado`);
-            const essentialElementsExist = calendarAppDiv && calendarContainer && monthModal && dayEditorModal && monthModalBody && statusSelectionDiv1 && statusSelectionDiv2;
-            if (!essentialElementsExist) {
-                 console.error("Error crítico: Faltan elementos esenciales del DOM al iniciar.");
-                 alert("Error: No se pudo iniciar el calendario correctamente.");
-                 return;
-            }
-             console.log("Elemento modalBody encontrado en initApp:", document.getElementById('modal-body'));
-            calendarAppDiv.style.display = 'block';
-            // ** MODIFICADO: Cargar datos al iniciar **
-            loadData(displayedYear); // Carga inicial de datos (esto llamará a generateAnnualCalendarUI)
+        function switchToSingleMonthView() {
+            calendarPage.style.display = 'none';
+            singleMonthViewPage.style.display = 'flex';
+            singleMonthViewPage.classList.add('fade-in');
+            generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
+            hideEmojiPicker();
         }
 
-        // --- Ejecución Inicial ---
-        document.addEventListener('DOMContentLoaded', initApp);
+        function switchToAnnualView() {
+            singleMonthViewPage.style.display = 'none';
+            calendarPage.style.display = 'flex';
+            calendarPage.classList.add('fade-in');
+            generateCalendar(currentDisplayedYear);
+            hideEmojiPicker();
+            if (currentDisplayedYear === new Date().getFullYear()) {
+                const currentMonthElement = document.getElementById('currentMonthCard');
+                if (currentMonthElement) {
+                    setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
+                }
+            }
+        }
+        toggleViewButton.addEventListener('click', switchToSingleMonthView);
+        toggleViewButtonSingle.addEventListener('click', switchToAnnualView);
 
+        prevMonthSingleBtn.addEventListener('click', function() {
+            currentSingleViewMonth--;
+            if (currentSingleViewMonth < 0) {
+                currentSingleViewMonth = 11;
+                currentSingleViewYear--;
+            }
+            generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
+        });
+        nextMonthSingleBtn.addEventListener('click', function() {
+            currentSingleViewMonth++;
+            if (currentSingleViewMonth > 11) {
+                currentSingleViewMonth = 0;
+                currentSingleViewYear++;
+            }
+            generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
+        });
+
+        function openMonthModal(monthIndex, year) {
+            modalTitle.textContent = `${meses[monthIndex]} ${year}`;
+            generateModalCalendarGrid(monthIndex, year);
+            monthModal.classList.add('active');
+        }
+        function closeMonthModal() {
+            monthModal.classList.remove('active');
+            hideEmojiPicker();
+        }
+        modalCloseButton.addEventListener('click', closeMonthModal);
+        monthModal.addEventListener('click', function(event) {
+            if (event.target === monthModal) closeMonthModal();
+        });
+
+        function populateEmojiPicker() {
+            emojiPickerPanel.innerHTML = '';
+            availableEmojis.forEach(emoji => {
+                const emojiSpan = document.createElement('span');
+                emojiSpan.textContent = emoji || '🚫';
+                emojiSpan.title = emoji ? emoji : "Borrar emoji";
+                emojiSpan.addEventListener('click', () => selectEmoji(emoji));
+                emojiPickerPanel.appendChild(emojiSpan);
+            });
+        }
+
+        function showEmojiPicker(placeholderElement, dayKey, placeholderKey) {
+            currentEditingPlaceholder = placeholderElement;
+            currentEditingDayKey = dayKey;
+            currentEditingPlaceholderKey = placeholderKey;
+            const rect = placeholderElement.getBoundingClientRect();
+            emojiPickerPanel.style.display = 'grid';
+            let top = rect.bottom + window.scrollY + 5;
+            let left = rect.left + window.scrollX - (emojiPickerPanel.offsetWidth / 2) + (rect.width / 2);
+            emojiPickerPanel.style.top = `${top}px`;
+            emojiPickerPanel.style.left = `${left}px`;
+            const pickerRect = emojiPickerPanel.getBoundingClientRect();
+            if (pickerRect.left < 0) emojiPickerPanel.style.left = '5px';
+            else if (pickerRect.right > window.innerWidth) emojiPickerPanel.style.left = `${window.innerWidth - pickerRect.width - 5}px`;
+            if (pickerRect.bottom > window.innerHeight && rect.top > pickerRect.height) {
+                emojiPickerPanel.style.top = `${rect.top + window.scrollY - pickerRect.height - 5}px`;
+            }
+        }
+        function hideEmojiPicker() {
+            emojiPickerPanel.style.display = 'none';
+            currentEditingPlaceholder = null; currentEditingDayKey = null; currentEditingPlaceholderKey = null;
+        }
+
+        function selectEmoji(emoji) {
+            if (currentEditingPlaceholder && currentEditingDayKey && currentEditingPlaceholderKey) {
+                if (!dayEmojis[currentEditingDayKey]) {
+                    dayEmojis[currentEditingDayKey] = {};
+                }
+                if (emoji === '') {
+                    currentEditingPlaceholder.textContent = '';
+                    currentEditingPlaceholder.classList.remove('has-emoji');
+                    delete dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey];
+                    if (Object.keys(dayEmojis[currentEditingDayKey]).length === 0) {
+                        delete dayEmojis[currentEditingDayKey];
+                    }
+                } else {
+                    currentEditingPlaceholder.textContent = emoji;
+                    currentEditingPlaceholder.classList.add('has-emoji');
+                    dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey] = emoji;
+                }
+                // FIREBASE: Guardar el cambio específico en Firestore
+                saveEmojiForDayKeyToFirestore(currentEditingDayKey, dayEmojis[currentEditingDayKey]);
+            }
+            hideEmojiPicker();
+        }
+
+        document.addEventListener('click', function(event) {
+            if (emojiPickerPanel.style.display === 'grid' &&
+                !emojiPickerPanel.contains(event.target) &&
+                currentEditingPlaceholder && !currentEditingPlaceholder.contains(event.target)) {
+                hideEmojiPicker();
+            }
+        });
+
+        function generateModalCalendarGrid(monthIndex, year) {
+            modalCalendarGrid.innerHTML = '';
+            const hoy = new Date();
+            diasSemana.forEach(diaNombre => {
+                const dayNameCell = document.createElement('div');
+                dayNameCell.className = 'modal-day-name'; dayNameCell.textContent = diaNombre;
+                modalCalendarGrid.appendChild(dayNameCell);
+            });
+            const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
+            const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+            const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
+            for (let i = 0; i < celdasVaciasInicio; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'modal-day-cell empty'; modalCalendarGrid.appendChild(emptyCell);
+            }
+            for (let dia = 1; dia <= diasEnMes; dia++) {
+                const dayCell = document.createElement('div'); dayCell.className = 'modal-day-cell';
+                const dayNumberSpan = document.createElement('span');
+                dayNumberSpan.className = 'modal-day-number'; dayNumberSpan.textContent = dia;
+                dayCell.appendChild(dayNumberSpan);
+                const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
+                const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+                const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
+                const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
+                if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
+                else { emojiPlaceholder1.textContent = '❤️'; emojiPlaceholder1.classList.add('has-emoji'); }
+                emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
+                emojiArea.appendChild(emojiPlaceholder1);
+
+                const emojiPlaceholder2 = document.createElement('div'); emojiPlaceholder2.className = 'emoji-placeholder';
+                const savedEmoji2 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder2'];
+                if (savedEmoji2) { emojiPlaceholder2.textContent = savedEmoji2; emojiPlaceholder2.classList.add('has-emoji'); }
+                else {
+                    const currentDateUTC = Date.UTC(year, monthIndex, dia);
+                    if (currentDateUTC >= workSequenceStartDateOriginal) {
+                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
+                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        const sequenceIndex = dayDiff % workSequencePattern.length;
+                        if (sequenceIndex >= 0) {
+                           const workCode = workSequencePattern[sequenceIndex];
+                            emojiPlaceholder2.textContent = workEmojisMap[workCode] || '';
+                            if (workEmojisMap[workCode]) emojiPlaceholder2.classList.add('has-emoji');
+                        } else { emojiPlaceholder2.textContent = ''; }
+                    } else { emojiPlaceholder2.textContent = ''; }
+                }
+                emojiPlaceholder2.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder2, dayKey, 'placeholder2'); });
+                emojiArea.appendChild(emojiPlaceholder2);
+                dayCell.appendChild(emojiArea);
+
+                const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
+                if (isHoliday(year, monthIndex, dia)) dayCell.classList.add('holiday-day');
+                if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+                modalCalendarGrid.appendChild(dayCell);
+            }
+        }
+
+        function generateSingleMonthCalendar(year, monthIndex) {
+            singleMonthCalendarGrid.innerHTML = '';
+            singleMonthYearDisplay.textContent = `${meses[monthIndex]} ${year}`;
+            const hoy = new Date();
+            diasSemana.forEach(diaNombre => {
+                const dayNameCell = document.createElement('div');
+                dayNameCell.className = 'single-month-day-name'; dayNameCell.textContent = diaNombre;
+                singleMonthCalendarGrid.appendChild(dayNameCell);
+            });
+            const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
+            const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+            const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
+            for (let i = 0; i < celdasVaciasInicio; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'single-month-day-cell empty'; singleMonthCalendarGrid.appendChild(emptyCell);
+            }
+            for (let dia = 1; dia <= diasEnMes; dia++) {
+                const dayCell = document.createElement('div'); dayCell.className = 'single-month-day-cell';
+                const dayNumberSpan = document.createElement('span');
+                dayNumberSpan.className = 'single-month-day-number'; dayNumberSpan.textContent = dia;
+                dayCell.appendChild(dayNumberSpan);
+                const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
+                const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+                const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
+                const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
+                if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
+                else { emojiPlaceholder1.textContent = '❤️'; emojiPlaceholder1.classList.add('has-emoji'); }
+                emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
+                emojiArea.appendChild(emojiPlaceholder1);
+
+                const emojiPlaceholder2 = document.createElement('div'); emojiPlaceholder2.className = 'emoji-placeholder';
+                const savedEmoji2 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder2'];
+                if (savedEmoji2) { emojiPlaceholder2.textContent = savedEmoji2; emojiPlaceholder2.classList.add('has-emoji'); }
+                else {
+                    const currentDateUTC = Date.UTC(year, monthIndex, dia);
+                     if (currentDateUTC >= workSequenceStartDateOriginal) {
+                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
+                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        const sequenceIndex = dayDiff % workSequencePattern.length;
+                        if (sequenceIndex >= 0) {
+                            const workCode = workSequencePattern[sequenceIndex];
+                            emojiPlaceholder2.textContent = workEmojisMap[workCode] || '';
+                            if (workEmojisMap[workCode]) emojiPlaceholder2.classList.add('has-emoji');
+                        } else { emojiPlaceholder2.textContent = ''; }
+                    } else { emojiPlaceholder2.textContent = ''; }
+                }
+                emojiPlaceholder2.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder2, dayKey, 'placeholder2'); });
+                emojiArea.appendChild(emojiPlaceholder2);
+                dayCell.appendChild(emojiArea);
+
+                const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
+                if (isHoliday(year, monthIndex, dia)) dayCell.classList.add('holiday-day');
+                if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+                singleMonthCalendarGrid.appendChild(dayCell);
+            }
+        }
+
+        function generateCalendar(year) {
+            calendarGrid.innerHTML = '';
+            calendarYearDisplay.textContent = year;
+            const hoy = new Date();
+            meses.forEach((nombreMes, indiceMes) => {
+                const monthCard = document.createElement('div'); monthCard.className = 'month-card';
+                monthCard.addEventListener('click', () => openMonthModal(indiceMes, year));
+                if (indiceMes === hoy.getMonth() && year === hoy.getFullYear()) monthCard.id = 'currentMonthCard';
+                const monthHeader = document.createElement('h2');
+                monthHeader.className = 'month-header'; monthHeader.textContent = nombreMes;
+                monthCard.appendChild(monthHeader);
+                const daysGridElement = document.createElement('div'); daysGridElement.className = 'days-grid';
+                diasSemana.forEach(diaNombre => {
+                    const dayNameCell = document.createElement('div');
+                    dayNameCell.className = 'day-name'; dayNameCell.textContent = diaNombre;
+                    daysGridElement.appendChild(dayNameCell);
+                });
+                const primerDiaDelMesRaw = new Date(year, indiceMes, 1).getDay();
+                const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+                const diasEnMes = new Date(year, indiceMes + 1, 0).getDate();
+                for (let i = 0; i < celdasVaciasInicio; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell empty'; daysGridElement.appendChild(emptyCell);
+                }
+                for (let dia = 1; dia <= diasEnMes; dia++) {
+                    const dayCell = document.createElement('div'); dayCell.className = 'day-cell';
+                    dayCell.textContent = dia;
+                    const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                    if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
+                    if (isHoliday(year, indiceMes, dia)) dayCell.classList.add('holiday-day');
+                    if (indiceMes === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+                    daysGridElement.appendChild(dayCell);
+                }
+                monthCard.appendChild(daysGridElement);
+                calendarGrid.appendChild(monthCard);
+            });
+        }
+
+        // --- INICIALIZACIÓN ---
+        populateEmojiPicker();
+        // La carga inicial de emojis y la visualización del calendario se manejan por onAuthStateChanged.
 
     </script>
-
 </body>
 </html>
+```
+
+**Pasos Adicionales para Ti:**
+
+1.  **Crear Proyecto Firebase**: Ve a [Firebase console](https://console.firebase.google.com/), crea un nuevo proyecto.
+2.  **Añadir App Web**: Dentro de tu proyecto Firebase, añade una aplicación web. Firebase te proporcionará un objeto de configuración `firebaseConfig`.
+3.  **Reemplazar `firebaseConfig`**: Copia el objeto `firebaseConfig` de tu proyecto Firebase y pégalo en el script HTML donde dice ``.
+4.  **Habilitar Authentication**:
+    * En la consola de Firebase, ve a "Authentication" (Autenticación).
+    * En la pestaña "Sign-in method" (Método de inicio de sesión), habilita "Email/Password" (Correo electrónico/Contraseña).
+    * Ve a la pestaña "Users" (Usuarios) y añade manualmente dos usuarios:
+        * Email: `usuario1@ejemplo.com`, Contraseña: `tonqui`
+        * Email: `usuario2@ejemplo.com`, Contraseña: `tonqui`
+5.  **Habilitar Firestore**:
+    * En la consola de Firebase, ve a "Firestore Database" (Base de datos Firestore).
+    * Crea una base de datos. Elige el modo de **producción** (production mode) si vas a desplegarlo, o modo de **prueba** (test mode) para desarrollo inicial (¡recuerda cambiar las reglas de seguridad antes de producción!).
+    * Para las reglas de seguridad de Firestore (pestaña "Rules"), para empezar y permitir que los usuarios autenticados lean y escriban sus propios datos de emojis, podrías usar algo como:
+        ```
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /users/{userId}/emojis/{dayId} {
+              allow read, write: if request.auth != null && request.auth.uid == userId;
+            }
+          }
+        }
+        ```
+        Esto significa que un usuario solo puede leer/escribir en la colección `emojis` bajo su propio `userId`.
+
+Una vez que hayas configurado Firebase y actualizado el `firebaseConfig` en el código, la aplicación debería funcionar online, guardando los emojis en Firestore y usando Firebase para la autenticación. El checkbox "Mantener la sesión iniciada" influirá en si la sesión persiste después de cerrar el navegad
