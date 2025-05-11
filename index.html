@@ -16,27 +16,54 @@
             background-color: #f0f2f5;
             color: #1f2937;
         }
-        .app-container { /* Contenedor general para centrar y gestionar la altura */
+        .app-container {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Centra el login y el spinner de carga inicial */
             padding: 20px;
+            position: relative; /* Para el overlay de carga */
         }
-        .login-container, .calendar-container, .single-month-view-container {
-            width: 100%; /* Ocupan todo el ancho del app-container */
+        /* Overlay de Carga */
+        #loadingOverlay {
+            position: fixed; /* Cubre toda la ventana */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 242, 245, 0.95); /* Fondo semi-transparente */
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* justify-content se maneja por app-container o específicamente abajo */
+            justify-content: center;
+            z-index: 2000; /* Por encima de todo */
+            color: #1f2937;
+            font-size: 1.2rem;
         }
-        .single-month-view-container {
-            justify-content: flex-start;
+        .loader {
+            border: 5px solid #e5e7eb; /* Gris claro */
+            border-top: 5px solid #4f46e5; /* Azul principal */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-container, .calendar-container, .single-month-view-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .single-month-view-container, .calendar-container {
             padding-top: 70px; /* Espacio para los controles superiores fijos */
-        }
-        .calendar-container {
-             padding-top: 70px; /* Espacio para los controles superiores fijos */
+             justify-content: flex-start; /* Alinea el contenido al inicio después de la carga */
         }
 
         .form-card {
@@ -62,7 +89,7 @@
             font-size: 0.875rem; margin-top: 8px; text-align: center;
         }
         .error-message { color: #ef4444; }
-        .info-message { color: #3b82f6; } /* Azul para mensajes informativos */
+        .info-message { color: #3b82f6; }
 
         .calendar-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -91,6 +118,7 @@
             font-size: 0.8rem; padding: 6px 4px; display: flex;
             align-items: center; justify-content: center;
             color: #374151; border-radius: 6px; min-height: 32px;
+            position: relative;
         }
         .day-cell.empty { background-color: transparent; }
         .day-cell.weekend-day { background-color: #f3f4f6; color: #4b5563; }
@@ -100,6 +128,22 @@
             font-weight: bold !important; border: 2px solid #0d9488;
         }
         .day-cell.holiday-day.current-day { background-color: #0f766e !important; color: white !important; }
+
+        .day-cell.day-cell-changed::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            box-shadow: 0 0 1px rgba(0,0,0,0.3);
+        }
+        .day-cell.current-day.day-cell-changed::after {
+            background-color: white;
+        }
 
         .year-navigation-container, .single-month-navigation-container {
             display: flex; align-items: center; justify-content: center;
@@ -126,9 +170,9 @@
         #singleMonthYearDisplay { font-size: 1.75rem; font-weight: 600; color: #1f2937; text-align: center; }
 
         .top-right-controls {
-            position: fixed; /* Fijar en la pantalla */
+            position: fixed;
             top: 20px; right: 20px;
-            display: flex; z-index: 100; /* Asegurar que esté por encima de otros elementos */
+            display: flex; z-index: 100;
             gap: 10px;
         }
         .control-button {
@@ -230,6 +274,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 10px;
             display: grid; grid-template-columns: repeat(6, 1fr);
             gap: 8px; z-index: 1001; display: none;
+            width: auto;
+            max-width: 250px;
         }
         .emoji-picker-panel span {
             font-size: 20px; cursor: pointer; padding: 4px;
@@ -237,7 +283,6 @@
         }
         .emoji-picker-panel span:hover { background-color: #f3f4f6; }
 
-        /* Checkbox para mantener sesión */
         .checkbox-container {
             display: flex;
             align-items: center;
@@ -257,6 +302,11 @@
 </head>
 <body>
     <div class="app-container">
+        <div id="loadingOverlay" style="display: none;">
+            <div class="loader"></div>
+            <p>Cargando calendario...</p>
+        </div>
+
         <div id="loginPage" class="login-container fade-in">
             <div class="form-card">
                 <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">CalenTonqui</h1>
@@ -275,7 +325,8 @@
                         <label for="rememberMe">Mantener la sesión iniciada</label>
                     </div>
                     <button type="submit" class="submit-button">Iniciar Sesión</button>
-                    <p id="authMessage" class="info-message" style="display: none;"></p> </form>
+                    <p id="authMessage" class="info-message" style="display: none;"></p>
+                </form>
             </div>
         </div>
 
@@ -308,9 +359,9 @@
             <div class="top-right-controls">
                  <button id="toggleViewButtonSingle" class="control-button" aria-label="Cambiar Vista">
                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                </button>
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                     </svg>
+                 </button>
                 <button id="logoutButtonSingle" class="control-button" aria-label="Cerrar Sesión">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
@@ -343,32 +394,34 @@
     </div>
 
     <script>
-       const firebaseConfig = {
-          apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
-          authDomain: "calentonqui.firebaseapp.com",
-          databaseURL: "https://calentonqui-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "calentonqui",
-          storageBucket: "calentonqui.firebasestorage.app",
-          messagingSenderId: "386155002525",
-          appId: "1:386155002525:web:75a074d782f07e285a7274"
+        // Firebase configuration (mantener la configuración proporcionada por el usuario)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
+            authDomain: "calentonqui.firebaseapp.com",
+            databaseURL: "https://calentonqui-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "calentonqui",
+            storageBucket: "calentonqui.firebasestorage.app",
+            messagingSenderId: "386155002525",
+            appId: "1:386155002525:web:75a074d782f07e285a7274"
         };
-        // // FIREBASE: Inicializar Firebase
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const fbAuth = firebase.auth();
         const fbDb = firebase.firestore();
-        let currentUserId = null; // Se establecerá después del login
+        let currentUserId = null;
 
-        // Emails permitidos (para la lógica de este ejemplo)
+        // Credenciales de prueba (mantener como en el código original)
         const allowedEmails = ['berbeci.yeison@gmail.com', 'kortisova.mariana@gmail.com'];
-        const commonPassword = 'tonqui123'; // Contraseña común para los emails permitidos
+        const commonPassword = 'tonqui123';
 
         // Elementos del DOM
+        const loadingOverlay = document.getElementById('loadingOverlay'); // Nuevo: Overlay de carga
         const loginPage = document.getElementById('loginPage');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const rememberMeCheckbox = document.getElementById('rememberMe');
-        const authMessage = document.getElementById('authMessage'); // Cambiado de errorMessage a authMessage
+        const authMessage = document.getElementById('authMessage');
 
         const calendarPage = document.getElementById('calendarPage');
         const calendarGrid = document.getElementById('calendarGrid');
@@ -392,7 +445,7 @@
         const modalCloseButton = document.getElementById('modalCloseButton');
 
         const emojiPickerPanel = document.getElementById('emojiPickerPanel');
-        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🏠', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌓', '📚', '❤️', '💡', ''];
+        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', ''];
 
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
@@ -400,12 +453,16 @@
         let currentDisplayedYear = new Date().getFullYear();
         let currentSingleViewYear = new Date().getFullYear();
         let currentSingleViewMonth = new Date().getMonth();
+        
+        let currentModalMonth = 0;
+        let currentModalYear = 0;
 
-        let dayEmojis = {}; // Local cache for emojis, will be synced with Firestore
+        let dayEmojis = {};
         let currentEditingPlaceholder = null;
         let currentEditingDayKey = null;
         let currentEditingPlaceholderKey = null;
 
+        // Configuración de secuencia de trabajo y festivos (mantener como en el código original)
         const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
         const workSequencePattern = [
             'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
@@ -413,7 +470,6 @@
             'TN', 'L',  'L',  'L',  'TD', 'TD', 'L',  'L'
         ];
         const workEmojisMap = { 'L': '🏡', 'TD': '☀️', 'TN': '🌙' };
-
         const berlinHolidays = {
             2024: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 2, day: 29, name: "Karfreitag" }, { month: 3, day: 1, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 9, name: "Christi Himmelfahrt" }, { month: 4, day: 20, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
             2025: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 3, day: 18, name: "Karfreitag" }, { month: 3, day: 21, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 8, name: "80. Jahrestag der Befreiung" }, { month: 4, day: 29, name: "Christi Himmelfahrt" }, { month: 5, day: 9, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
@@ -426,110 +482,98 @@
             return holidaysForYear.some(h => h.month === month && h.day === day);
         }
 
-        /**
-         * Muestra un mensaje en el área de autenticación.
-         * @param {string} message - El mensaje a mostrar.
-         * @param {boolean} isError - True si es un mensaje de error, false para informativo.
-         */
         function showAuthMessage(message, isError = false) {
             authMessage.textContent = message;
             authMessage.className = isError ? 'error-message' : 'info-message';
             authMessage.style.display = 'block';
         }
 
-        // FIREBASE: Cargar emojis desde Firestore para el usuario actual
         async function loadDayEmojisFromFirestore() {
             if (!currentUserId) return;
-            showAuthMessage("Cargando emojis...", false);
+            // No mostramos mensaje de "Cargando emojis..." aquí, ya que el overlay general lo cubre.
             try {
                 const emojisSnapshot = await fbDb.collection('users').doc(currentUserId).collection('emojis').get();
-                dayEmojis = {}; // Reset local cache
+                dayEmojis = {};
                 emojisSnapshot.forEach(doc => {
                     dayEmojis[doc.id] = doc.data();
                 });
-                showAuthMessage("Emojis cargados.", false);
-                setTimeout(() => authMessage.style.display = 'none', 2000);
+                // No mostramos mensaje de "Emojis cargados" aquí.
+                
                 // Regenerar la vista actual después de cargar los emojis
                 if (calendarPage.style.display === 'flex') generateCalendar(currentDisplayedYear);
                 if (singleMonthViewPage.style.display === 'flex') generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
-
+                if (monthModal.classList.contains('active')) {
+                    generateModalCalendarGrid(currentModalMonth, currentModalYear);
+                }
             } catch (error) {
                 console.error("Error loading emojis from Firestore: ", error);
-                showAuthMessage("Error al cargar emojis.", true);
+                // Considerar mostrar un error más visible si falla la carga, aunque el overlay se oculte.
+                showAuthMessage("Error al cargar emojis desde la base de datos.", true);
             }
         }
 
-        // FIREBASE: Guardar emoji para un día específico en Firestore
         async function saveEmojiForDayKeyToFirestore(dayKey, emojiDataForDay) {
             if (!currentUserId || !dayKey) return;
             try {
                 if (emojiDataForDay && Object.keys(emojiDataForDay).length > 0) {
                     await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).set(emojiDataForDay);
                 } else {
-                    // Si no hay emojis para ese día, eliminar el documento de Firestore
                     await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).delete();
                 }
-                // console.log(`Emoji for ${dayKey} saved to Firestore.`);
             } catch (error) {
                 console.error("Error saving emoji to Firestore: ", error);
                 showAuthMessage("Error al guardar emoji online.", true);
             }
         }
 
-
-        // --- MANEJADORES DE EVENTOS ---
-
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
+            const emailVal = emailInput.value; // Renombrado para evitar conflicto con la variable global 'email' si existiera
+            const passwordVal = passwordInput.value; // Renombrado
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
-            if (!allowedEmails.includes(email) || password !== commonPassword) {
-                 showAuthMessage('Email o contraseña incorrectos para este demo.', true);
-                 // En una app real, no darías esta pista, solo "credenciales incorrectas".
-                 // Aquí es para guiar al usuario a usar los emails permitidos.
-                 // Para que funcione con Firebase, estas cuentas deben existir en Firebase Auth.
-                 if (!allowedEmails.includes(email)) {
-                    console.warn(`Intento de login con email no permitido: ${email}. Asegúrate de que ${email} (con contraseña 'tonqui') existe en tu Firebase Authentication.`);
-                 }
+            if (!allowedEmails.includes(emailVal) || passwordVal !== commonPassword) {
+                showAuthMessage('Email o contraseña incorrectos para este demo.', true);
+                if (!allowedEmails.includes(emailVal)) {
+                    console.warn(`Intento de login con email no permitido: ${emailVal}. Asegúrate de que ${emailVal} (con contraseña '${commonPassword}') existe en tu Firebase Authentication.`);
+                }
                 return;
             }
-            showAuthMessage("Iniciando sesión...", false);
+            showAuthMessage("Iniciando sesión...", false); // Este mensaje se verá brevemente antes del overlay
+            loadingOverlay.style.display = 'flex'; // Mostrar overlay de carga ANTES de intentar el login
 
             try {
                 await fbAuth.setPersistence(persistence);
-                const userCredential = await fbAuth.signInWithEmailAndPassword(email, password);
-                // El observer onAuthStateChanged se encargará del resto (navegación, carga de datos)
-                // No es necesario llamar a showCalendarPage directamente aquí si onAuthStateChanged está bien configurado.
+                const userCredential = await fbAuth.signInWithEmailAndPassword(emailVal, passwordVal);
                 localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
-
+                // onAuthStateChanged se encargará del resto (navegación, carga de datos, ocultar overlay)
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                     showAuthMessage('Email o contraseña incorrectos. Asegúrate de que las cuentas de prueba existen en Firebase.', true);
+                    showAuthMessage('Email o contraseña incorrectos. Asegúrate de que las cuentas de prueba existen en Firebase.', true);
                 } else {
                     showAuthMessage('Error al iniciar sesión: ' + error.message, true);
                 }
+                loadingOverlay.style.display = 'none'; // Ocultar overlay si el login falla
             }
         });
 
-        // FIREBASE: Observer para el estado de autenticación
         fbAuth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUserId = user.uid;
-                showAuthMessage("Sesión iniciada.", false);
-                setTimeout(() => authMessage.style.display = 'none', 1500);
+                // El overlay ya debería estar visible si el login fue exitoso desde el submit handler.
+                // Si es por persistencia, lo mostramos aquí.
+                if (loadingOverlay.style.display === 'none') {
+                    loadingOverlay.style.display = 'flex';
+                }
+                authMessage.style.display = 'none'; // Ocultar mensajes de login previos
 
                 loginPage.style.display = 'none';
-                // Decide qué vista mostrar. Por defecto, la anual.
-                // Podrías guardar la última vista visitada en localStorage si quieres.
                 calendarPage.style.display = 'flex';
                 singleMonthViewPage.style.display = 'none';
-                calendarPage.classList.add('fade-in');
+                calendarPage.classList.add('fade-in'); // Aplicar fade-in a la página del calendario
 
-                await loadDayEmojisFromFirestore(); // Carga los emojis del usuario
-                generateCalendar(currentDisplayedYear); // Genera la vista anual por defecto
+                await loadDayEmojisFromFirestore(); // Carga emojis y regenera vistas
 
                 if (currentDisplayedYear === new Date().getFullYear()) {
                     const currentMonthElement = document.getElementById('currentMonthCard');
@@ -537,13 +581,14 @@
                         setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
                     }
                 }
-                 // Restaurar el estado del checkbox "Mantener sesión"
                 const remembered = localStorage.getItem('calendarRememberMe') === 'true';
                 rememberMeCheckbox.checked = remembered;
+                
+                loadingOverlay.style.display = 'none'; // Ocultar overlay DESPUÉS de que todo esté cargado
 
             } else {
                 currentUserId = null;
-                dayEmojis = {}; // Limpiar emojis locales al cerrar sesión
+                dayEmojis = {}; 
 
                 loginPage.style.display = 'flex';
                 calendarPage.style.display = 'none';
@@ -551,24 +596,29 @@
                 monthModal.classList.remove('active');
                 loginPage.classList.add('fade-in');
                 hideEmojiPicker();
-                emailInput.value = ''; // Limpiar campos de login
+                emailInput.value = ''; 
                 passwordInput.value = '';
                 showAuthMessage("Sesión cerrada o no iniciada.", false);
                 setTimeout(() => authMessage.style.display = 'none', 2000);
+                loadingOverlay.style.display = 'none'; // Asegurarse que el overlay esté oculto al cerrar sesión
             }
         });
 
-
         function handleLogout() {
             showAuthMessage("Cerrando sesión...", false);
-            fbAuth.signOut().catch(error => {
-                console.error("Error al cerrar sesión:", error);
-                showAuthMessage("Error al cerrar sesión.", true);
-            });
+            loadingOverlay.style.display = 'flex'; // Mostrar overlay durante el cierre de sesión
+            fbAuth.signOut()
+                .then(() => {
+                    // onAuthStateChanged se encargará de ocultar el overlay y mostrar la página de login
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                    showAuthMessage("Error al cerrar sesión.", true);
+                    loadingOverlay.style.display = 'none'; // Ocultar overlay si hay error
+                });
         }
         logoutButton.addEventListener('click', handleLogout);
         logoutButtonSingle.addEventListener('click', handleLogout);
-
 
         prevYearBtn.addEventListener('click', function() {
             currentDisplayedYear--;
@@ -583,6 +633,8 @@
             calendarPage.style.display = 'none';
             singleMonthViewPage.style.display = 'flex';
             singleMonthViewPage.classList.add('fade-in');
+            currentSingleViewYear = currentDisplayedYear;
+            currentSingleViewMonth = new Date().getMonth();
             generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
             hideEmojiPicker();
         }
@@ -621,6 +673,8 @@
         });
 
         function openMonthModal(monthIndex, year) {
+            currentModalMonth = monthIndex;
+            currentModalYear = year;
             modalTitle.textContent = `${meses[monthIndex]} ${year}`;
             generateModalCalendarGrid(monthIndex, year);
             monthModal.classList.add('active');
@@ -628,6 +682,9 @@
         function closeMonthModal() {
             monthModal.classList.remove('active');
             hideEmojiPicker();
+            if (calendarPage.style.display === 'flex') {
+                generateCalendar(currentDisplayedYear);
+            }
         }
         modalCloseButton.addEventListener('click', closeMonthModal);
         monthModal.addEventListener('click', function(event) {
@@ -649,17 +706,27 @@
             currentEditingPlaceholder = placeholderElement;
             currentEditingDayKey = dayKey;
             currentEditingPlaceholderKey = placeholderKey;
+            
             const rect = placeholderElement.getBoundingClientRect();
             emojiPickerPanel.style.display = 'grid';
+            
             let top = rect.bottom + window.scrollY + 5;
             let left = rect.left + window.scrollX - (emojiPickerPanel.offsetWidth / 2) + (rect.width / 2);
+
             emojiPickerPanel.style.top = `${top}px`;
             emojiPickerPanel.style.left = `${left}px`;
+
             const pickerRect = emojiPickerPanel.getBoundingClientRect();
-            if (pickerRect.left < 0) emojiPickerPanel.style.left = '5px';
-            else if (pickerRect.right > window.innerWidth) emojiPickerPanel.style.left = `${window.innerWidth - pickerRect.width - 5}px`;
-            if (pickerRect.bottom > window.innerHeight && rect.top > pickerRect.height) {
+            if (pickerRect.left < 5) {
+                emojiPickerPanel.style.left = '5px';
+            } else if (pickerRect.right > window.innerWidth - 5) {
+                emojiPickerPanel.style.left = `${window.innerWidth - pickerRect.width - 5}px`;
+            }
+
+            if (pickerRect.bottom > window.innerHeight - 5 && rect.top > pickerRect.height + 10) {
                 emojiPickerPanel.style.top = `${rect.top + window.scrollY - pickerRect.height - 5}px`;
+            } else if (pickerRect.bottom > window.innerHeight - 5) {
+                emojiPickerPanel.style.top = `${window.innerHeight - pickerRect.height - 5}px`;
             }
         }
         function hideEmojiPicker() {
@@ -672,20 +739,48 @@
                 if (!dayEmojis[currentEditingDayKey]) {
                     dayEmojis[currentEditingDayKey] = {};
                 }
-                if (emoji === '') {
-                    currentEditingPlaceholder.textContent = '';
+
+                if (emoji === '') { 
+                    currentEditingPlaceholder.textContent = ''; 
                     currentEditingPlaceholder.classList.remove('has-emoji');
-                    delete dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey];
-                    if (Object.keys(dayEmojis[currentEditingDayKey]).length === 0) {
-                        delete dayEmojis[currentEditingDayKey];
+                    
+                    if (currentEditingPlaceholderKey === 'placeholder1') {
+                         currentEditingPlaceholder.textContent = '🏡'; 
+                         currentEditingPlaceholder.classList.add('has-emoji'); 
+                    } else if (currentEditingPlaceholderKey === 'placeholder2') {
+                        const [year, month, day] = currentEditingDayKey.split('-').map(Number);
+                        const currentDateUTC = Date.UTC(year, month - 1, day);
+                        if (currentDateUTC >= workSequenceStartDateOriginal) {
+                            const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
+                            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                            const sequenceIndex = dayDiff % workSequencePattern.length;
+                            if (sequenceIndex >= 0) {
+                                const workCode = workSequencePattern[sequenceIndex];
+                                currentEditingPlaceholder.textContent = workEmojisMap[workCode] || '';
+                                if (workEmojisMap[workCode]) currentEditingPlaceholder.classList.add('has-emoji');
+                            }
+                        } else {
+                             currentEditingPlaceholder.textContent = '';
+                        }
                     }
-                } else {
+
+                    delete dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey]; 
+                    if (Object.keys(dayEmojis[currentEditingDayKey]).length === 0) {
+                        delete dayEmojis[currentEditingDayKey]; 
+                    }
+                } else { 
                     currentEditingPlaceholder.textContent = emoji;
                     currentEditingPlaceholder.classList.add('has-emoji');
                     dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey] = emoji;
                 }
-                // FIREBASE: Guardar el cambio específico en Firestore
+                
                 saveEmojiForDayKeyToFirestore(currentEditingDayKey, dayEmojis[currentEditingDayKey]);
+
+                 if (monthModal.classList.contains('active')) {
+                    generateModalCalendarGrid(currentModalMonth, currentModalYear);
+                } else if (singleMonthViewPage.style.display === 'flex') {
+                    generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
+                }
             }
             hideEmojiPicker();
         }
@@ -693,10 +788,52 @@
         document.addEventListener('click', function(event) {
             if (emojiPickerPanel.style.display === 'grid' &&
                 !emojiPickerPanel.contains(event.target) &&
-                currentEditingPlaceholder && !currentEditingPlaceholder.contains(event.target)) {
+                (!currentEditingPlaceholder || !currentEditingPlaceholder.contains(event.target))) {
                 hideEmojiPicker();
             }
         });
+        
+        function createEmojiPlaceholder(dayKey, placeholderKey, year, monthIndex, day) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'emoji-placeholder';
+            
+            const userEmoji = dayEmojis[dayKey] && dayEmojis[dayKey][placeholderKey];
+
+            if (userEmoji) {
+                placeholder.textContent = userEmoji;
+                placeholder.classList.add('has-emoji');
+            } else {
+                if (placeholderKey === 'placeholder1') {
+                    placeholder.textContent = '🏡'; 
+                    placeholder.classList.add('has-emoji');
+                } else if (placeholderKey === 'placeholder2') {
+                    const currentDateUTC = Date.UTC(year, monthIndex, day);
+                    if (currentDateUTC >= workSequenceStartDateOriginal) {
+                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
+                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        const sequenceIndex = dayDiff % workSequencePattern.length;
+                        if (sequenceIndex >= 0) {
+                            const workCode = workSequencePattern[sequenceIndex];
+                            const workEmoji = workEmojisMap[workCode];
+                            if (workEmoji) {
+                                placeholder.textContent = workEmoji;
+                                placeholder.classList.add('has-emoji');
+                            } else {
+                                placeholder.textContent = ''; 
+                            }
+                        } else { placeholder.textContent = ''; }
+                    } else { placeholder.textContent = ''; }
+                } else {
+                    placeholder.textContent = ''; 
+                }
+            }
+            
+            placeholder.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showEmojiPicker(placeholder, dayKey, placeholderKey);
+            });
+            return placeholder;
+        }
 
         function generateModalCalendarGrid(monthIndex, year) {
             modalCalendarGrid.innerHTML = '';
@@ -718,34 +855,12 @@
                 const dayNumberSpan = document.createElement('span');
                 dayNumberSpan.className = 'modal-day-number'; dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
+                
                 const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
                 const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
-                const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
-                const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
-                if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
-                else { emojiPlaceholder1.textContent = '🏡'; emojiPlaceholder1.classList.add('has-emoji'); }
-                emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
-                emojiArea.appendChild(emojiPlaceholder1);
-
-                const emojiPlaceholder2 = document.createElement('div'); emojiPlaceholder2.className = 'emoji-placeholder';
-                const savedEmoji2 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder2'];
-                if (savedEmoji2) { emojiPlaceholder2.textContent = savedEmoji2; emojiPlaceholder2.classList.add('has-emoji'); }
-                else {
-                    const currentDateUTC = Date.UTC(year, monthIndex, dia);
-                    if (currentDateUTC >= workSequenceStartDateOriginal) {
-                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
-                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                        const sequenceIndex = dayDiff % workSequencePattern.length;
-                        if (sequenceIndex >= 0) {
-                           const workCode = workSequencePattern[sequenceIndex];
-                            emojiPlaceholder2.textContent = workEmojisMap[workCode] || '';
-                            if (workEmojisMap[workCode]) emojiPlaceholder2.classList.add('has-emoji');
-                        } else { emojiPlaceholder2.textContent = ''; }
-                    } else { emojiPlaceholder2.textContent = ''; }
-                }
-                emojiPlaceholder2.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder2, dayKey, 'placeholder2'); });
-                emojiArea.appendChild(emojiPlaceholder2);
+                emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder1', year, monthIndex, dia));
+                emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder2', year, monthIndex, dia));
                 dayCell.appendChild(emojiArea);
 
                 const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
@@ -777,34 +892,12 @@
                 const dayNumberSpan = document.createElement('span');
                 dayNumberSpan.className = 'single-month-day-number'; dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
+                
                 const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
                 const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
-                const emojiPlaceholder1 = document.createElement('div'); emojiPlaceholder1.className = 'emoji-placeholder';
-                const savedEmoji1 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder1'];
-                if (savedEmoji1) { emojiPlaceholder1.textContent = savedEmoji1; emojiPlaceholder1.classList.add('has-emoji'); }
-                else { emojiPlaceholder1.textContent = '🏡'; emojiPlaceholder1.classList.add('has-emoji'); }
-                emojiPlaceholder1.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder1, dayKey, 'placeholder1'); });
-                emojiArea.appendChild(emojiPlaceholder1);
-
-                const emojiPlaceholder2 = document.createElement('div'); emojiPlaceholder2.className = 'emoji-placeholder';
-                const savedEmoji2 = dayEmojis[dayKey] && dayEmojis[dayKey]['placeholder2'];
-                if (savedEmoji2) { emojiPlaceholder2.textContent = savedEmoji2; emojiPlaceholder2.classList.add('has-emoji'); }
-                else {
-                    const currentDateUTC = Date.UTC(year, monthIndex, dia);
-                     if (currentDateUTC >= workSequenceStartDateOriginal) {
-                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
-                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                        const sequenceIndex = dayDiff % workSequencePattern.length;
-                        if (sequenceIndex >= 0) {
-                            const workCode = workSequencePattern[sequenceIndex];
-                            emojiPlaceholder2.textContent = workEmojisMap[workCode] || '';
-                            if (workEmojisMap[workCode]) emojiPlaceholder2.classList.add('has-emoji');
-                        } else { emojiPlaceholder2.textContent = ''; }
-                    } else { emojiPlaceholder2.textContent = ''; }
-                }
-                emojiPlaceholder2.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(emojiPlaceholder2, dayKey, 'placeholder2'); });
-                emojiArea.appendChild(emojiPlaceholder2);
+                emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder1', year, monthIndex, dia));
+                emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder2', year, monthIndex, dia));
                 dayCell.appendChild(emojiArea);
 
                 const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
@@ -823,29 +916,41 @@
                 const monthCard = document.createElement('div'); monthCard.className = 'month-card';
                 monthCard.addEventListener('click', () => openMonthModal(indiceMes, year));
                 if (indiceMes === hoy.getMonth() && year === hoy.getFullYear()) monthCard.id = 'currentMonthCard';
+                
                 const monthHeader = document.createElement('h2');
                 monthHeader.className = 'month-header'; monthHeader.textContent = nombreMes;
                 monthCard.appendChild(monthHeader);
+                
                 const daysGridElement = document.createElement('div'); daysGridElement.className = 'days-grid';
                 diasSemana.forEach(diaNombre => {
                     const dayNameCell = document.createElement('div');
                     dayNameCell.className = 'day-name'; dayNameCell.textContent = diaNombre;
                     daysGridElement.appendChild(dayNameCell);
                 });
+                
                 const primerDiaDelMesRaw = new Date(year, indiceMes, 1).getDay();
                 const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
                 const diasEnMes = new Date(year, indiceMes + 1, 0).getDate();
+                
                 for (let i = 0; i < celdasVaciasInicio; i++) {
                     const emptyCell = document.createElement('div');
                     emptyCell.className = 'day-cell empty'; daysGridElement.appendChild(emptyCell);
                 }
+                
                 for (let dia = 1; dia <= diasEnMes; dia++) {
                     const dayCell = document.createElement('div'); dayCell.className = 'day-cell';
                     dayCell.textContent = dia;
+                    
                     const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
                     if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                     if (isHoliday(year, indiceMes, dia)) dayCell.classList.add('holiday-day');
                     if (indiceMes === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+
+                    const dayKey = `${year}-${String(indiceMes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+                    if (dayEmojis[dayKey] && Object.keys(dayEmojis[dayKey]).length > 0) {
+                        dayCell.classList.add('day-cell-changed');
+                    }
+                    
                     daysGridElement.appendChild(dayCell);
                 }
                 monthCard.appendChild(daysGridElement);
@@ -855,8 +960,11 @@
 
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
-        // La carga inicial de emojis y la visualización del calendario se manejan por onAuthStateChanged.
-
+        // La carga inicial y la generación del calendario son manejadas por onAuthStateChanged.
+        // Asegurarse de que el overlay de carga esté oculto inicialmente si no hay sesión.
+        if (!fbAuth.currentUser) {
+            loadingOverlay.style.display = 'none';
+        }
     </script>
 </body>
 </html>
