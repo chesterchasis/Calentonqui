@@ -555,7 +555,7 @@
             color: #374151;
         }
 
-        /* Optimizaciones para pantallas pequeñas (ej. iPhone no-Plus) */
+        /* Optimizaciones para pantallas pequeñas */
         @media (max-width: 420px) {
             .form-card {
                 padding: 20px;
@@ -601,7 +601,6 @@
                 font-size: 0.7rem;
                 min-height: 28px;
             }
-
             /* Ajustes específicos para el MODAL en pantallas pequeñas */
             .modal-content {
                 padding: 15px;
@@ -645,7 +644,6 @@
                 height: 22px;      
                 font-size: 14px;   
             }
-
             .emoji-picker-panel {
                 grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); 
                 padding: 8px;
@@ -656,7 +654,6 @@
                 font-size: 18px; 
                 padding: 3px;
             }
-
             /* Ajustes para la VISTA DE MES INDIVIDUAL en pantallas pequeñas */
             .single-month-navigation-container {
                 gap: 0.5rem;
@@ -704,13 +701,12 @@
     <div class="app-container">
         <div id="loadingOverlay" style="display: none;">
             <div class="loader"></div>
-            <p id="loadingMessageText">Cargando calendario...</p> 
+            <p id="loadingMessageText">Cargando tonquis...</p> 
         </div>
 
         <div id="loginPage" class="login-container fade-in">
             <div class="form-card">
                 <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">CalenTonqui</h1>
-                <p class="text-center text-gray-600 mb-8">Inicia sesión para acceder.</p>
                 <form id="loginForm">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -841,7 +837,7 @@
         const modalCloseButton = document.getElementById('modalCloseButton');
 
         const emojiPickerPanel = document.getElementById('emojiPickerPanel');
-        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', ''];
+        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', '🚫'];
 
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
