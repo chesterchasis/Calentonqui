@@ -54,7 +54,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         .login-container {
             width: 100%;
             display: flex;
@@ -63,7 +62,6 @@
             justify-content: center; 
             flex-grow: 1; 
         }
-
         .calendar-container, .single-month-view-container {
             width: 100%; 
             display: flex;
@@ -98,7 +96,6 @@
         }
         .error-message { color: #ef4444; }
         .info-message { color: #3b82f6; }
-
         /* Vista Anual */
         .calendar-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -123,12 +120,12 @@
             gap: 4px; text-align: center; flex-grow: 1;
             position: relative; z-index: 1; 
         }
-        .day-name { 
+        .day-name { /* Estilo para nombres de día en vista anual */
             font-size: 0.8rem; padding: 6px 4px; display: flex;
             align-items: center; justify-content: center;
             font-weight: 500; color: #6b7280;
         }
-        .day-cell { 
+        .day-cell { /* Estilo para celdas de día en vista anual */
             font-size: 0.8rem; padding: 6px 4px; display: flex;
             align-items: center; justify-content: center;
             color: #374151; border-radius: 6px; min-height: 32px;
@@ -150,7 +147,6 @@
         }
         .day-cell.current-day.day-cell-changed::after { background-color: white; }
 
-        /* Tema para la tarjeta del mes actual en la VISTA ANUAL */
         .month-card.current-month-card-themed {
             background-image: url('https://raw.githubusercontent.com/chesterchasis/Calentonqui/main/mayo.jpg'); 
             background-size: cover;
@@ -239,7 +235,7 @@
             line-height: 1; 
         }
 
-        .single-month-day-name {
+        .single-month-day-name { /* Estilo para nombres de día en vista mensual individual */
             font-size: 0.8rem; 
             font-weight: 600;
             color: #4b5563; 
@@ -272,14 +268,13 @@
             background-repeat: no-repeat; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-
         .current-month-themed-grid .single-month-day-name {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.85);
             color: #2c1e1a; 
             font-weight: 700;
         }
         .current-month-themed-grid .single-month-day-cell {
-            background-color: rgba(255, 255, 255, 0.9); 
+            background-color: rgba(255, 255, 255, 0.95); 
             border: 1px solid rgba(255,255,255,0.75); 
             position: relative; 
             z-index: 2; 
@@ -293,7 +288,7 @@
             text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5); 
         }
         .current-month-themed-grid .single-month-day-cell.empty {
-            background-color: rgba(255,255,255,0.6); 
+            background-color: rgba(255,255,255,0.7); 
             border-color: transparent;
         }
         .current-month-themed-grid .single-month-day-cell.weekend-day {
@@ -324,7 +319,7 @@
              text-shadow: 0 0 2px rgba(0,0,0,0.3); 
         }
 
-        .single-month-day-cell { 
+        .single-month-day-cell { /* Estilo para celdas de día en vista mensual individual */
             background-color: #ffffff; 
             border: 1px solid #e5e7eb; 
             border-radius: 10px; 
@@ -340,7 +335,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
             transform: translateY(-2px);
         }
-
         .single-month-day-cell.empty {
             background-color: #f8fafc; 
             border-color: transparent; 
@@ -350,7 +344,6 @@
         .single-month-day-cell.empty:hover {
             background-color: #f8fafc; 
         }
-
         .single-month-day-number {
             font-size: 0.8rem;
             font-weight: 600;
@@ -359,7 +352,6 @@
             position: relative; 
             z-index: 2;
         }
-
         .single-month-day-cell .emoji-display-area {
             margin-top: auto; 
             padding-top: 8px; 
@@ -372,7 +364,6 @@
             position: relative; 
             z-index: 2;
         }
-
         .single-month-day-cell .emoji-placeholder {
             width: 30px; 
             height: 30px;
@@ -396,14 +387,12 @@
             background-color: #f0f2f580; 
             border-radius: 50%; 
         }
-
         .single-month-day-cell.weekend-day {
             background-color: #f8f9fa; 
         }
         .single-month-day-cell.weekend-day .single-month-day-number {
             color: #52525b; 
         }
-
         .single-month-day-cell.holiday-day {
             background-color: #fff1f2; 
             border-color: #ffdde1; 
@@ -412,7 +401,6 @@
             color: #be123c; 
             font-weight: 700;
         }
-
         .single-month-day-cell.current-day {
             background-color: #ecfdf5 !important; 
             border: 2px solid #10b981 !important; 
@@ -479,16 +467,16 @@
         }
         .modal-close-button:hover { color: #1f2937; }
 
-        .modal-days-grid {
+        .modal-days-grid { /* Estilos para la cuadrícula de días en el MODAL */
             display: grid; grid-template-columns: repeat(7, 1fr);
             gap: 8px; text-align: center; width: 100%;
             max-width: 900px; margin: 0 auto;
         }
-        .modal-day-name {
+        .modal-day-name { /* Estilo para nombres de día en el MODAL */
             font-size: 0.85rem; font-weight: 500;
             color: #6b7280; padding: 8px 5px; display: flex; align-items: center; justify-content: center;
         }
-        .modal-day-cell {
+        .modal-day-cell { /* Estilo para celdas de día en el MODAL */
             position: relative; color: #374151;
             border-radius: 8px; min-height: 80px; padding: 4px;
             display: flex; flex-direction: column;
@@ -555,8 +543,11 @@
             color: #374151;
         }
 
-        /* Optimizaciones para pantallas pequeñas */
+        /* Optimizaciones para pantallas pequeñas (ej. iPhone no-Plus) */
         @media (max-width: 420px) {
+            .app-container {
+                padding: 10px; 
+            }
             .form-card {
                 padding: 20px;
             }
@@ -586,22 +577,30 @@
                 width: 36px;
                 height: 36px;
             }
-            .month-card {
-                padding: 15px;
+            .month-card { 
+                padding: 10px; 
+                min-width: 0; 
             }
-            .month-header {
-                font-size: 1rem;
-                margin-bottom: 10px;
+            .month-header { 
+                font-size: 0.9rem; 
+                margin-bottom: 8px; 
             }
-            .day-name { /* Para la vista anual en pantallas pequeñas */
-                font-size: 0.65rem; /* Reducido para que quepa más texto si es necesario */
-                padding: 4px 1px; /* Reducido el padding horizontal */
+            .days-grid { 
+                gap: 2px; 
             }
-            .day-cell { /* Para la vista anual en pantallas pequeñas */
-                font-size: 0.7rem;
-                min-height: 28px;
+            .day-name { 
+                font-size: 0.6rem; 
+                padding: 3px 1px; 
             }
-            /* Ajustes específicos para el MODAL en pantallas pequeñas */
+            .day-cell { 
+                font-size: 0.65rem;
+                min-height: 24px; 
+                padding: 3px 1px;
+            }
+             .day-cell.day-cell-changed::after { 
+                width: 4px; height: 4px;
+                bottom: 1px;
+            }
             .modal-content {
                 padding: 15px;
                 width: 95%; 
@@ -654,44 +653,46 @@
                 font-size: 18px; 
                 padding: 3px;
             }
-            /* Ajustes para la VISTA DE MES INDIVIDUAL en pantallas pequeñas */
             .single-month-navigation-container {
                 gap: 0.5rem;
+                 margin-bottom: 1rem; 
             }
             #singleMonthYearDisplay {
-                font-size: 1.5rem;
+                font-size: 1.3rem; 
             }
             .month-nav-button {
                  width: 36px;
                 height: 36px;
             }
             .single-month-days-grid {
-                padding: 8px; /* Reducido de 10px */
-                gap: 3px;     /* Reducido de 5px */
+                padding: 5px; 
+                gap: 2px;     
+                max-width: 100%; 
             }
             .single-month-day-name {
-                font-size: 0.65rem; /* Reducido de 0.7rem */
-                padding: 5px 1px; /* Reducido padding horizontal */
-                margin-bottom: 4px; /* Ligeramente reducido */
+                font-size: 0.6rem; 
+                padding: 4px 0px; 
+                margin-bottom: 3px; 
+                border-radius: 4px; 
             }
             .single-month-day-cell {
-                min-height: 65px; /* Reducido de 70px */
-                padding: 4px;     /* Reducido de 5px */
-                border-radius: 6px; /* Ligeramente más pequeño */
+                min-height: 55px; 
+                padding: 3px;     
+                border-radius: 4px; 
             }
             .single-month-day-number {
-                font-size: 0.7rem; /* Reducido de 0.75rem */
+                font-size: 0.65rem; 
             }
             .single-month-day-cell .emoji-display-area {
-                gap: 2px;         /* Reducido de 4px */
-                padding-top: 2px; /* Reducido de 4px */
-                flex-wrap: wrap;  /* Permite que los emojis se apilen si no caben */
-                align-content: center; /* Centra los emojis si se apilan */
+                gap: 1px;         
+                padding-top: 1px; 
+                flex-wrap: wrap;  
+                align-content: center; 
             }
             .single-month-day-cell .emoji-placeholder {
-                width: 22px;      /* Reducido de 26px */
-                height: 22px;     /* Reducido de 26px */
-                font-size: 14px;  /* Reducido de 18px */
+                width: 20px;      
+                height: 20px;     
+                font-size: 12px;  
             }
         }
 
@@ -701,12 +702,12 @@
     <div class="app-container">
         <div id="loadingOverlay" style="display: none;">
             <div class="loader"></div>
-            <p id="loadingMessageText">Cargando tonquis...</p> 
+            <p id="loadingMessageText">Cargando...</p> 
         </div>
 
         <div id="loginPage" class="login-container fade-in">
             <div class="form-card">
-                <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">CalenTonqui</h1>
+                <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">CalenTonqui</h1> 
                 <form id="loginForm">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -790,7 +791,7 @@
     </div>
 
     <script>
-        // Firebase configuration
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
             authDomain: "calentonqui.firebaseapp.com",
@@ -805,7 +806,7 @@
         const fbDb = firebase.firestore();
         let currentUserId = null;
 
-        // DOM Elements
+        // Elementos del DOM
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingMessageText = document.getElementById('loadingMessageText'); 
         const loginPage = document.getElementById('loginPage');
@@ -837,46 +838,40 @@
         const modalCloseButton = document.getElementById('modalCloseButton');
 
         const emojiPickerPanel = document.getElementById('emojiPickerPanel');
-        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', '🚫'];
+        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', '🗑️'];
 
+        // Constantes y variables de estado
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
-
         let currentDisplayedYear = new Date().getFullYear();
         let currentSingleViewYear = new Date().getFullYear();
         let currentSingleViewMonth = new Date().getMonth();
-        
         let currentModalMonth = 0;
         let currentModalYear = 0;
-
-        let dayEmojis = {};
+        let dayEmojis = {}; 
         let currentEditingPlaceholder = null;
         let currentEditingDayKey = null;
         let currentEditingPlaceholderKey = null;
 
         const funLoadingMessages = [
-            "Cargando tonqui...",
-            "Espera un poco tonquito...",
-            "Preparando tu CalenTonqui...",
-            "Un momentito, por favor...",
-            "Afinando los calendarios...",
-            "¡Ya casi está tu tonqui-calendario!"
+            "Cargando tonquis...", "Espera un poco tonquito...", "Preparando tu CalenTonqui...", "Afinando los calendarios...", "¡Ya casi está tu tonqui-calendario!"
         ];
-        const defaultLoadingMessage = "Cargando calendario...";
+        const defaultLoadingMessage = "Cargando tonquis...";
 
-        const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
+        const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3); 
         const workSequencePattern = [
             'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
             'TN', 'TN', 'L',  'L',  'TN', 'TN', 'TN', 'L',  'L',  'TN',
             'TN', 'L',  'L',  'L',  'TD', 'TD', 'L',  'L'
         ];
         const workEmojisMap = { 'L': '🏡', 'TD': '☀️', 'TN': '🌙' };
-        const berlinHolidays = {
+        const berlinHolidays = { 
             2024: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 2, day: 29, name: "Karfreitag" }, { month: 3, day: 1, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 9, name: "Christi Himmelfahrt" }, { month: 4, day: 20, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
             2025: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 3, day: 18, name: "Karfreitag" }, { month: 3, day: 21, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 8, name: "80. Jahrestag der Befreiung" }, { month: 4, day: 29, name: "Christi Himmelfahrt" }, { month: 5, day: 9, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }],
             2026: [{ month: 0, day: 1, name: "Neujahr" }, { month: 2, day: 8, name: "Internationaler Frauentag" }, { month: 3, day: 3, name: "Karfreitag" }, { month: 3, day: 6, name: "Ostermontag" }, { month: 4, day: 1, name: "Tag der Arbeit" }, { month: 4, day: 14, name: "Christi Himmelfahrt" }, { month: 4, day: 25, name: "Pfingstmontag" }, { month: 9, day: 3, name: "Tag der Deutschen Einheit" }, { month: 11, day: 25, name: "1. Weihnachtsfeiertag" }, { month: 11, day: 26, name: "2. Weihnachtsfeiertag" }]
         };
 
+        // --- FUNCIONES AUXILIARES ---
         function isHoliday(year, month, day) {
             const holidaysForYear = berlinHolidays[year];
             if (!holidaysForYear) return false;
@@ -897,23 +892,20 @@
             loadingOverlay.style.display = 'none';
         }
 
+        // --- LÓGICA DE FIREBASE ---
         async function loadDayEmojisFromFirestore() {
             if (!currentUserId) return;
             try {
                 const emojisSnapshot = await fbDb.collection('users').doc(currentUserId).collection('emojis').get();
                 dayEmojis = {};
-                emojisSnapshot.forEach(doc => {
-                    dayEmojis[doc.id] = doc.data();
-                });
+                emojisSnapshot.forEach(doc => { dayEmojis[doc.id] = doc.data(); });
                 
                 if (calendarPage.style.display === 'flex') generateCalendar(currentDisplayedYear);
                 if (singleMonthViewPage.style.display === 'flex') generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
-                if (monthModal.classList.contains('active')) {
-                    generateModalCalendarGrid(currentModalMonth, currentModalYear);
-                }
+                if (monthModal.classList.contains('active')) generateModalCalendarGrid(currentModalMonth, currentModalYear);
             } catch (error) {
-                console.error("Error loading emojis from Firestore: ", error);
-                showAuthMessage("Error al cargar emojis.", true);
+                console.error("Error al cargar emojis de Firestore: ", error);
+                showAuthMessage("Error al cargar datos.", true);
             }
         }
 
@@ -922,84 +914,63 @@
             try {
                 if (emojiDataForDay && Object.keys(emojiDataForDay).length > 0) {
                     await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).set(emojiDataForDay);
-                } else {
+                } else { 
                     await fbDb.collection('users').doc(currentUserId).collection('emojis').doc(dayKey).delete();
                 }
             } catch (error) {
-                console.error("Error saving emoji to Firestore: ", error);
-                showAuthMessage("Error al guardar emoji.", true);
+                console.error("Error al guardar emoji en Firestore: ", error);
+                showAuthMessage("Error al guardar cambio.", true);
             }
         }
 
+        // --- AUTENTICACIÓN ---
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             const emailVal = emailInput.value; 
             const passwordVal = passwordInput.value; 
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-
             showAuthMessage("Iniciando sesión...", false); 
-            const randomFunMessage = funLoadingMessages[Math.floor(Math.random() * funLoadingMessages.length)];
-            showLoading(randomFunMessage); 
-
+            showLoading(funLoadingMessages[Math.floor(Math.random() * funLoadingMessages.length)]);
             try {
                 await fbAuth.setPersistence(persistence);
                 await fbAuth.signInWithEmailAndPassword(emailVal, passwordVal);
-                localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
+                localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked.toString());
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
-                    showAuthMessage('Email o contraseña incorrectos.', true);
-                } else {
-                    showAuthMessage('Error al iniciar sesión: ' + error.message, true);
-                }
-                hideLoading(); 
+                const errorCodes = ['auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential', 'auth/invalid-email'];
+                showAuthMessage(errorCodes.includes(error.code) ? 'Email o contraseña incorrectos.' : `Error: ${error.message}`, true);
+                hideLoading();
             }
         });
 
         fbAuth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUserId = user.uid;
-                if (loadingOverlay.style.display === 'none') { 
-                    showLoading(); 
-                }
+                if (loadingOverlay.style.display === 'none') showLoading();
                 authMessage.style.display = 'none'; 
-
                 loginPage.style.display = 'none';
-                if (singleMonthViewPage.style.display !== 'flex') { 
-                    calendarPage.style.display = 'flex';
-                    calendarPage.classList.add('fade-in');
-                } else { 
-                    singleMonthViewPage.style.display = 'flex';
-                    singleMonthViewPage.classList.add('fade-in');
-                }
 
+                const viewToDisplay = singleMonthViewPage.style.display === 'flex' ? singleMonthViewPage : calendarPage;
+                viewToDisplay.style.display = 'flex';
+                viewToDisplay.classList.add('fade-in');
+                
                 await loadDayEmojisFromFirestore(); 
 
-                if (calendarPage.style.display === 'flex' && currentDisplayedYear === new Date().getFullYear()) {
-                    const currentMonthElement = document.getElementById('currentMonthCard');
-                    if (currentMonthElement) {
-                        setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
-                    }
+                if (viewToDisplay === calendarPage && currentDisplayedYear === new Date().getFullYear()) {
+                    const currentMonthCard = document.getElementById('currentMonthCard');
+                    if (currentMonthCard) setTimeout(() => currentMonthCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
                 }
-                const remembered = localStorage.getItem('calendarRememberMe') === 'true';
-                rememberMeCheckbox.checked = remembered;
-                
-                hideLoading(); 
-
+                rememberMeCheckbox.checked = localStorage.getItem('calendarRememberMe') === 'true';
+                hideLoading();
             } else {
-                currentUserId = null;
-                dayEmojis = {}; 
-
+                currentUserId = null; dayEmojis = {};
                 loginPage.style.display = 'flex';
                 calendarPage.style.display = 'none';
                 singleMonthViewPage.style.display = 'none';
                 monthModal.classList.remove('active');
                 loginPage.classList.add('fade-in');
                 hideEmojiPicker();
-                emailInput.value = ''; 
-                passwordInput.value = '';
-                showAuthMessage("Sesión cerrada o no iniciada.", false);
-                setTimeout(() => authMessage.style.display = 'none', 2000);
+                emailInput.value = ''; passwordInput.value = '';
                 hideLoading(); 
             }
         });
@@ -1007,24 +978,17 @@
         function handleLogout() {
             showAuthMessage("Cerrando sesión...", false);
             showLoading("Cerrando tu tonqui-sesión..."); 
-            fbAuth.signOut()
-                .catch(error => { 
-                    console.error("Error al cerrar sesión:", error);
-                    showAuthMessage("Error al cerrar sesión.", true);
-                    hideLoading(); 
-                });
+            fbAuth.signOut().catch(error => { 
+                console.error("Error al cerrar sesión:", error);
+                showAuthMessage("Error al cerrar sesión.", true);
+                hideLoading(); 
+            });
         }
-        logoutButton.addEventListener('click', handleLogout);
-        logoutButtonSingle.addEventListener('click', handleLogout);
+        [logoutButton, logoutButtonSingle].forEach(btn => btn.addEventListener('click', handleLogout));
 
-        prevYearBtn.addEventListener('click', function() {
-            currentDisplayedYear--;
-            generateCalendar(currentDisplayedYear);
-        });
-        nextYearBtn.addEventListener('click', function() {
-            currentDisplayedYear++;
-            generateCalendar(currentDisplayedYear);
-        });
+        // --- NAVEGACIÓN Y VISTAS ---
+        prevYearBtn.addEventListener('click', () => { currentDisplayedYear--; generateCalendar(currentDisplayedYear); });
+        nextYearBtn.addEventListener('click', () => { currentDisplayedYear++; generateCalendar(currentDisplayedYear); });
 
         function switchToSingleMonthView() {
             calendarPage.style.display = 'none';
@@ -1043,35 +1007,27 @@
             generateCalendar(currentDisplayedYear); 
             hideEmojiPicker();
             if (currentDisplayedYear === new Date().getFullYear()) {
-                const currentMonthElement = document.getElementById('currentMonthCard');
-                if (currentMonthElement) {
-                    setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
-                }
+                const currentMonthCard = document.getElementById('currentMonthCard');
+                if (currentMonthCard) setTimeout(() => currentMonthCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
             }
         }
         toggleViewButton.addEventListener('click', switchToSingleMonthView);
         toggleViewButtonSingle.addEventListener('click', switchToAnnualView);
 
-        prevMonthSingleBtn.addEventListener('click', function() {
+        prevMonthSingleBtn.addEventListener('click', () => {
             currentSingleViewMonth--;
-            if (currentSingleViewMonth < 0) {
-                currentSingleViewMonth = 11;
-                currentSingleViewYear--;
-            }
+            if (currentSingleViewMonth < 0) { currentSingleViewMonth = 11; currentSingleViewYear--; }
             generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
         });
-        nextMonthSingleBtn.addEventListener('click', function() {
+        nextMonthSingleBtn.addEventListener('click', () => {
             currentSingleViewMonth++;
-            if (currentSingleViewMonth > 11) {
-                currentSingleViewMonth = 0;
-                currentSingleViewYear++;
-            }
+            if (currentSingleViewMonth > 11) { currentSingleViewMonth = 0; currentSingleViewYear++; }
             generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
         });
 
+        // --- MODAL DEL MES ---
         function openMonthModal(monthIndex, year) {
-            currentModalMonth = monthIndex;
-            currentModalYear = year;
+            currentModalMonth = monthIndex; currentModalYear = year;
             modalTitle.textContent = `${meses[monthIndex]} ${year}`;
             generateModalCalendarGrid(monthIndex, year); 
             monthModal.classList.add('active');
@@ -1079,21 +1035,18 @@
         function closeMonthModal() {
             monthModal.classList.remove('active');
             hideEmojiPicker();
-            if (calendarPage.style.display === 'flex') {
-                generateCalendar(currentDisplayedYear);
-            }
+            if (calendarPage.style.display === 'flex') generateCalendar(currentDisplayedYear); 
         }
         modalCloseButton.addEventListener('click', closeMonthModal);
-        monthModal.addEventListener('click', function(event) {
-            if (event.target === monthModal) closeMonthModal();
-        });
+        monthModal.addEventListener('click', (event) => { if (event.target === monthModal) closeMonthModal(); });
 
+        // --- SELECTOR DE EMOJIS ---
         function populateEmojiPicker() {
             emojiPickerPanel.innerHTML = '';
             availableEmojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji || '';
-                emojiSpan.title = emoji ? emoji : "Borrar emoji";
+                emojiSpan.textContent = emoji;
+                emojiSpan.title = emoji === '🗑️' ? "Borrar/Restablecer" : emoji;
                 emojiSpan.addEventListener('click', () => selectEmoji(emoji));
                 emojiPickerPanel.appendChild(emojiSpan);
             });
@@ -1103,27 +1056,17 @@
             currentEditingPlaceholder = placeholderElement;
             currentEditingDayKey = dayKey;
             currentEditingPlaceholderKey = placeholderKey;
-            
             const rect = placeholderElement.getBoundingClientRect();
             emojiPickerPanel.style.display = 'grid';
             
             let top = rect.bottom + window.scrollY + 5;
             let left = rect.left + window.scrollX - (emojiPickerPanel.offsetWidth / 2) + (rect.width / 2);
 
-            emojiPickerPanel.style.top = `${top}px`;
-            emojiPickerPanel.style.left = `${left}px`;
+            emojiPickerPanel.style.top = `${Math.max(5, Math.min(top, window.innerHeight - emojiPickerPanel.offsetHeight - 5))}px`;
+            emojiPickerPanel.style.left = `${Math.max(5, Math.min(left, window.innerWidth - emojiPickerPanel.offsetWidth - 5))}px`;
 
-            const pickerRect = emojiPickerPanel.getBoundingClientRect();
-            if (pickerRect.left < 5) {
-                emojiPickerPanel.style.left = '5px';
-            } else if (pickerRect.right > window.innerWidth - 5) {
-                emojiPickerPanel.style.left = `${window.innerWidth - pickerRect.width - 5}px`;
-            }
-
-            if (pickerRect.bottom > window.innerHeight - 5 && rect.top > pickerRect.height + 10) {
-                emojiPickerPanel.style.top = `${rect.top + window.scrollY - pickerRect.height - 5}px`;
-            } else if (pickerRect.bottom > window.innerHeight - 5) {
-                emojiPickerPanel.style.top = `${window.innerHeight - pickerRect.height - 5}px`;
+            if (emojiPickerPanel.getBoundingClientRect().bottom > window.innerHeight - 5 && rect.top > emojiPickerPanel.offsetHeight + 10) {
+                 emojiPickerPanel.style.top = `${rect.top + window.scrollY - emojiPickerPanel.offsetHeight - 5}px`;
             }
         }
         function hideEmojiPicker() {
@@ -1132,58 +1075,49 @@
         }
 
         function selectEmoji(emoji) {
-            if (currentEditingPlaceholder && currentEditingDayKey && currentEditingPlaceholderKey) {
-                if (!dayEmojis[currentEditingDayKey]) {
-                    dayEmojis[currentEditingDayKey] = {};
-                }
+            if (!currentEditingPlaceholder || !currentEditingDayKey || !currentEditingPlaceholderKey) return;
+            
+            if (!dayEmojis[currentEditingDayKey]) dayEmojis[currentEditingDayKey] = {};
 
-                if (emoji === '') { 
-                    currentEditingPlaceholder.textContent = ''; 
-                    currentEditingPlaceholder.classList.remove('has-emoji');
-                    
-                    if (currentEditingPlaceholderKey === 'placeholder1') {
-                         currentEditingPlaceholder.textContent = '🏡'; 
-                         currentEditingPlaceholder.classList.add('has-emoji'); 
-                    } else if (currentEditingPlaceholderKey === 'placeholder2') {
-                        const [year, month, day] = currentEditingDayKey.split('-').map(Number);
-                        const currentDateUTC = Date.UTC(year, month - 1, day);
-                        if (currentDateUTC >= workSequenceStartDateOriginal) {
-                            const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
-                            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                            const sequenceIndex = dayDiff % workSequencePattern.length;
-                            if (sequenceIndex >= 0) {
-                                const workCode = workSequencePattern[sequenceIndex];
-                                const workEmoji = workEmojisMap[workCode]; 
-                                currentEditingPlaceholder.textContent = workEmoji || '';
-                                if (workEmoji) currentEditingPlaceholder.classList.add('has-emoji');
-                            }
-                        } else {
-                             currentEditingPlaceholder.textContent = '';
+            if (emoji === '🗑️') { 
+                currentEditingPlaceholder.textContent = ''; 
+                currentEditingPlaceholder.classList.remove('has-emoji');
+                delete dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey];
+
+                if (currentEditingPlaceholderKey === 'placeholder1') {
+                     currentEditingPlaceholder.textContent = '🏡'; 
+                     currentEditingPlaceholder.classList.add('has-emoji'); 
+                } else if (currentEditingPlaceholderKey === 'placeholder2') {
+                    const [year, month, day] = currentEditingDayKey.split('-').map(Number);
+                    const currentDateUTC = Date.UTC(year, month - 1, day);
+                    if (currentDateUTC >= workSequenceStartDateOriginal) {
+                        const dayDiff = Math.floor((currentDateUTC - workSequenceStartDateOriginal) / (1000 * 3600 * 24));
+                        const sequenceIndex = dayDiff % workSequencePattern.length;
+                        if (sequenceIndex >= 0) {
+                            const workCode = workSequencePattern[sequenceIndex];
+                            const workEmoji = workEmojisMap[workCode]; 
+                            currentEditingPlaceholder.textContent = workEmoji || '';
+                            if (workEmoji) currentEditingPlaceholder.classList.add('has-emoji');
                         }
+                    } else {
+                         currentEditingPlaceholder.textContent = '';
                     }
-
-                    delete dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey]; 
-                    if (Object.keys(dayEmojis[currentEditingDayKey]).length === 0) {
-                        delete dayEmojis[currentEditingDayKey]; 
-                    }
-                } else { 
-                    currentEditingPlaceholder.textContent = emoji;
-                    currentEditingPlaceholder.classList.add('has-emoji');
-                    dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey] = emoji;
                 }
-                
-                saveEmojiForDayKeyToFirestore(currentEditingDayKey, dayEmojis[currentEditingDayKey]);
-
-                 if (monthModal.classList.contains('active')) {
-                    generateModalCalendarGrid(currentModalMonth, currentModalYear);
-                } else if (singleMonthViewPage.style.display === 'flex') {
-                    generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
-                }
+                if (Object.keys(dayEmojis[currentEditingDayKey]).length === 0) delete dayEmojis[currentEditingDayKey];
+            } else { 
+                currentEditingPlaceholder.textContent = emoji;
+                currentEditingPlaceholder.classList.add('has-emoji');
+                dayEmojis[currentEditingDayKey][currentEditingPlaceholderKey] = emoji;
             }
+            
+            saveEmojiForDayKeyToFirestore(currentEditingDayKey, dayEmojis[currentEditingDayKey]);
+
+            if (monthModal.classList.contains('active')) generateModalCalendarGrid(currentModalMonth, currentModalYear);
+            if (singleMonthViewPage.style.display === 'flex') generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
             hideEmojiPicker();
         }
 
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', (event) => { 
             if (emojiPickerPanel.style.display === 'grid' &&
                 !emojiPickerPanel.contains(event.target) &&
                 (!currentEditingPlaceholder || !currentEditingPlaceholder.contains(event.target))) {
@@ -1191,10 +1125,10 @@
             }
         });
         
+        // --- CREACIÓN DE ELEMENTOS DE EMOJI ---
         function createEmojiPlaceholder(dayKey, placeholderKey, year, monthIndex, day) {
             const placeholder = document.createElement('div');
             placeholder.className = 'emoji-placeholder'; 
-            
             const userEmoji = dayEmojis[dayKey] && dayEmojis[dayKey][placeholderKey];
 
             if (userEmoji) {
@@ -1207,32 +1141,21 @@
                 } else if (placeholderKey === 'placeholder2') {
                     const currentDateUTC = Date.UTC(year, monthIndex, day);
                     if (currentDateUTC >= workSequenceStartDateOriginal) {
-                        const timeDiff = currentDateUTC - workSequenceStartDateOriginal;
-                        const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        const dayDiff = Math.floor((currentDateUTC - workSequenceStartDateOriginal) / (1000 * 3600 * 24));
                         const sequenceIndex = dayDiff % workSequencePattern.length;
                         if (sequenceIndex >= 0) {
                             const workCode = workSequencePattern[sequenceIndex];
                             const workEmoji = workEmojisMap[workCode];
-                            if (workEmoji) {
-                                placeholder.textContent = workEmoji;
-                                placeholder.classList.add('has-emoji');
-                            } else { 
-                                placeholder.textContent = ''; 
-                            }
-                        } else { placeholder.textContent = ''; } 
-                    } else { placeholder.textContent = ''; } 
-                } else { 
-                    placeholder.textContent = ''; 
+                            if (workEmoji) { placeholder.textContent = workEmoji; placeholder.classList.add('has-emoji');}
+                        }
+                    }
                 }
             }
-            
-            placeholder.addEventListener('click', (event) => {
-                event.stopPropagation();
-                showEmojiPicker(placeholder, dayKey, placeholderKey);
-            });
+            placeholder.addEventListener('click', (event) => { event.stopPropagation(); showEmojiPicker(placeholder, dayKey, placeholderKey); });
             return placeholder;
         }
-
+        
+        // --- GENERACIÓN DE CALENDARIOS (Versión no refactorizada) ---
         function generateModalCalendarGrid(monthIndex, year) {
             modalCalendarGrid.innerHTML = ''; 
             const hoy = new Date();
@@ -1244,7 +1167,7 @@
             });
 
             const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
-            const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+            const celdasVaciasInicio = (primerDiaDelMesRaw === 0) ? 6 : primerDiaDelMesRaw - 1; // Lunes es 0
             const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
 
             for (let i = 0; i < celdasVaciasInicio; i++) {
@@ -1269,7 +1192,9 @@
                 emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder2', year, monthIndex, dia));
                 dayCell.appendChild(emojiArea);
 
-                const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                const fechaActual = new Date(year, monthIndex, dia);
+                const diaDeSemanaActual = (fechaActual.getDay() === 0) ? 6 : fechaActual.getDay() - 1; // Lunes es 0
+
                 if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                 if (isHoliday(year, monthIndex, dia)) dayCell.classList.add('holiday-day');
                 if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
@@ -1283,11 +1208,7 @@
             const hoy = new Date();
             const esMesActualReal = hoy.getFullYear() === year && hoy.getMonth() === monthIndex;
 
-            if (esMesActualReal) {
-                singleMonthCalendarGrid.classList.add('current-month-themed-grid');
-            } else {
-                singleMonthCalendarGrid.classList.remove('current-month-themed-grid');
-            }
+            singleMonthCalendarGrid.classList.toggle('current-month-themed-grid', esMesActualReal);
 
             diasSemana.forEach(diaNombre => {
                 const dayNameCell = document.createElement('div');
@@ -1297,7 +1218,7 @@
             });
 
             const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
-            const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+            const celdasVaciasInicio = (primerDiaDelMesRaw === 0) ? 6 : primerDiaDelMesRaw - 1; // Lunes es 0
             const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
 
             for (let i = 0; i < celdasVaciasInicio; i++) {
@@ -1322,7 +1243,9 @@
                 emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder2', year, monthIndex, dia));
                 dayCell.appendChild(emojiArea);
 
-                const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                const fechaActual = new Date(year, monthIndex, dia);
+                const diaDeSemanaActual = (fechaActual.getDay() === 0) ? 6 : fechaActual.getDay() - 1; // Lunes es 0
+
                 if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                 if (isHoliday(year, monthIndex, dia)) dayCell.classList.add('holiday-day');
                 if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) {
@@ -1339,15 +1262,11 @@
             meses.forEach((nombreMes, indiceMes) => {
                 const monthCard = document.createElement('div'); 
                 monthCard.className = 'month-card'; 
-                
                 const esMesActualReal = hoy.getFullYear() === year && hoy.getMonth() === indiceMes;
                 if (esMesActualReal) {
                     monthCard.id = 'currentMonthCard';
                     monthCard.classList.add('current-month-card-themed'); 
-                } else {
-                    monthCard.classList.remove('current-month-card-themed'); 
                 }
-
                 monthCard.addEventListener('click', () => openMonthModal(indiceMes, year));
                 
                 const monthHeader = document.createElement('h2');
@@ -1365,7 +1284,7 @@
                 });
                 
                 const primerDiaDelMesRaw = new Date(year, indiceMes, 1).getDay();
-                const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
+                const celdasVaciasInicio = (primerDiaDelMesRaw === 0) ? 6 : primerDiaDelMesRaw - 1; // Lunes es 0
                 const diasEnMes = new Date(year, indiceMes + 1, 0).getDate();
                 
                 for (let i = 0; i < celdasVaciasInicio; i++) {
@@ -1379,7 +1298,9 @@
                     dayCell.className = 'day-cell'; 
                     dayCell.textContent = dia;
                     
-                    const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
+                    const fechaActual = new Date(year, indiceMes, dia);
+                    const diaDeSemanaActual = (fechaActual.getDay() === 0) ? 6 : fechaActual.getDay() - 1; // Lunes es 0
+
                     if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                     if (isHoliday(year, indiceMes, dia)) dayCell.classList.add('holiday-day');
                     if (esMesActualReal && dia === hoy.getDate()) { 
@@ -1400,9 +1321,7 @@
 
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
-        if (!fbAuth.currentUser) {
-            hideLoading(); 
-        }
+        if (!fbAuth.currentUser) hideLoading(); 
     </script>
 </body>
 </html>
