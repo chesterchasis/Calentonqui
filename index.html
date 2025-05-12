@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario</title>
+    <title>Calentonqui</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -55,7 +55,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Contenedor de Login */
         .login-container {
             width: 100%;
             display: flex;
@@ -65,7 +64,6 @@
             flex-grow: 1; 
         }
 
-        /* Contenedores de las vistas de Calendario */
         .calendar-container, .single-month-view-container {
             width: 100%; 
             display: flex;
@@ -101,31 +99,36 @@
         .error-message { color: #ef4444; }
         .info-message { color: #3b82f6; }
 
+        /* Vista Anual */
         .calendar-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px; width: 100%; max-width: 1200px; margin-top: 20px;
             margin-left: auto; margin-right: auto; 
         }
-        .month-card {
+        .month-card { 
             background-color: white; padding: 20px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); display: flex; flex-direction: column;
             cursor: pointer; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            position: relative; 
         }
         .month-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
-        .month-header {
+        
+        .month-header { 
             font-size: 1.125rem; font-weight: 600;
             color: #1f2937; margin-bottom: 15px; text-align: center;
+            position: relative; z-index: 1; 
         }
-        .days-grid {
+        .days-grid { 
             display: grid; grid-template-columns: repeat(7, 1fr);
             gap: 4px; text-align: center; flex-grow: 1;
+            position: relative; z-index: 1; 
         }
-        .day-name {
+        .day-name { 
             font-size: 0.8rem; padding: 6px 4px; display: flex;
             align-items: center; justify-content: center;
             font-weight: 500; color: #6b7280;
         }
-        .day-cell {
+        .day-cell { 
             font-size: 0.8rem; padding: 6px 4px; display: flex;
             align-items: center; justify-content: center;
             color: #374151; border-radius: 6px; min-height: 32px;
@@ -147,9 +150,63 @@
         }
         .day-cell.current-day.day-cell-changed::after { background-color: white; }
 
+        /* Tema para la tarjeta del mes actual en la VISTA ANUAL */
+        .month-card.current-month-card-themed {
+            background-image: url('https://raw.githubusercontent.com/chesterchasis/Calentonqui/main/mayo.jpg'); 
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            border: 2px solid #FF7F50; 
+        }
+        .current-month-card-themed .month-header {
+            color: #FFFFFF;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            background-color: rgba(0,0,0,0.5); /* Ajustado para más opacidad */
+            border-radius: 6px 6px 0 0;
+            padding: 5px;
+            margin-bottom: 10px; 
+        }
+        .current-month-card-themed .day-name {
+            color: #f0f0f0; 
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+            font-weight: 600;
+            background-color: rgba(0,0,0,0.3); /* Ajustado para más opacidad */
+            border-radius: 3px;
+        }
+        .current-month-card-themed .day-cell {
+            color: #FFFFFF; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7), 0 0 4px rgba(0,0,0,0.5); 
+            background-color: rgba(0,0,0,0.4); /* Ajustado para más opacidad */
+            border-radius: 4px;
+        }
+        .current-month-card-themed .day-cell.empty {
+            background-color: rgba(0,0,0,0.2); /* Ajustado */
+            color: transparent; 
+            text-shadow: none;
+        }
+        .current-month-card-themed .day-cell.weekend-day {
+            background-color: rgba(0,0,0,0.45); /* Ajustado */
+        }
+        .current-month-card-themed .day-cell.holiday-day {
+            background-color: rgba(255, 105, 97, 0.8) !important; /* Ajustado a 0.8 */
+            color: #fff !important;
+            text-shadow: 1px 1px 2px rgba(80,0,0,0.7);
+        }
+        .current-month-card-themed .day-cell.current-day { 
+            background-color: rgba(255, 215, 0, 0.8) !important; /* Ajustado a 0.8 */
+            color: #333 !important;
+            text-shadow: none;
+            border: 1px solid #DAA520 !important; 
+            font-weight: bold;
+        }
+        .current-month-card-themed .day-cell.day-cell-changed::after {
+             background-color: #FFD700; 
+             box-shadow: 0 0 3px black;
+        }
+
         .year-navigation-container, .single-month-navigation-container {
             display: flex; align-items: center; justify-content: center;
-            gap: 1rem; /* Espacio entre botones y título */
+            gap: 1rem; 
             width:100%;
             max-width: 900px; 
             margin-left:auto; margin-right:auto;
@@ -157,9 +214,8 @@
         .year-navigation-container { margin-bottom: 2rem;}
         .single-month-navigation-container { 
             margin-top: 1rem; 
-            margin-bottom: 1.5rem; /* Espacio debajo de la barra de navegación del mes */
+            margin-bottom: 1.5rem; 
         }
-
 
         .year-nav-button, .month-nav-button {
             background-color: white; border: 1px solid #d1d5db;
@@ -180,8 +236,7 @@
             font-size: 2rem; 
             font-weight: 700; 
             color: #111827; 
-            /* margin-bottom: 1.5rem; */ /* Eliminado para que align-items del contenedor funcione mejor */
-            line-height: 1; /* Ajustar si es necesario para un centrado vertical más preciso con los botones */
+            line-height: 1; 
         }
 
         .single-month-day-name {
@@ -193,6 +248,8 @@
             border-radius: 8px; 
             margin-bottom: 6px; 
             text-transform: uppercase; 
+            position: relative; 
+            z-index: 2;
         }
 
         .single-month-days-grid {
@@ -203,9 +260,74 @@
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
             text-align: center; 
+            padding: 15px; 
+            border-radius: 12px; 
+            position: relative; 
+        }
+        
+        /* Tema para el mes actual en la VISTA DE MES INDIVIDUAL */
+        .current-month-themed-grid {
+            background-image: url('https://raw.githubusercontent.com/chesterchasis/Calentonqui/main/mayo.jpg'); 
+            background-size: cover; 
+            background-position: center center; 
+            background-repeat: no-repeat; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .single-month-day-cell {
+        /* Ajustes para la legibilidad sobre el fondo temático (imagen) en VISTA DE MES INDIVIDUAL */
+        .current-month-themed-grid .single-month-day-name {
+            background-color: rgba(255, 255, 255, 0.8); /* Más opaco */
+            color: #2c1e1a; 
+            font-weight: 700;
+        }
+        .current-month-themed-grid .single-month-day-cell {
+            background-color: rgba(255, 255, 255, 0.9); /* Ajustado a 0.9 para menos transparencia */
+            border: 1px solid rgba(255,255,255,0.75); /* Borde un poco más opaco */
+            position: relative; 
+            z-index: 2; 
+        }
+        .current-month-themed-grid .single-month-day-cell:hover {
+             background-color: rgba(255, 255, 255, 0.95); 
+        }
+        .current-month-themed-grid .single-month-day-number {
+            color: #3A120B; 
+            font-weight: 700;
+            text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5); 
+        }
+        .current-month-themed-grid .single-month-day-cell.empty {
+            background-color: rgba(255,255,255,0.6); /* Más opaco */
+            border-color: transparent;
+        }
+        .current-month-themed-grid .single-month-day-cell.weekend-day {
+            background-color: rgba(255, 255, 255, 0.88); /* Ajustado */
+        }
+        .current-month-themed-grid .single-month-day-cell.holiday-day {
+            background-color: rgba(253, 232, 232, 0.9); /* Ajustado */
+            border-color: rgba(252, 192, 192, 0.9); /* Ajustado */
+        }
+        .current-month-themed-grid .single-month-day-cell.holiday-day .single-month-day-number {
+            color: #8C1C1C;
+        }
+        .current-month-themed-grid .single-month-day-cell.current-day {
+            background-color: rgba(255, 230, 153, 0.9) !important; /* Ajustado */
+            border: 2px solid #FFC107 !important;
+        }
+        .current-month-themed-grid .single-month-day-cell.current-day .single-month-day-number {
+            color: #4A370B !important;
+            text-shadow: none; 
+        }
+        .current-month-themed-grid .emoji-placeholder {
+            background-color: rgba(255,255,255,0.7); /* Más opaco */
+            border: 1px dashed rgba(80,80,80,0.75); /* Más opaco */
+        }
+        .current-month-themed-grid .emoji-placeholder.has-emoji {
+             background-color: transparent;
+             border: 1px solid transparent;
+             text-shadow: 0 0 2px rgba(0,0,0,0.3); 
+        }
+
+
+        .single-month-day-cell { 
             background-color: #ffffff; 
             border: 1px solid #e5e7eb; 
             border-radius: 10px; 
@@ -237,6 +359,8 @@
             font-weight: 600;
             color: #374151; 
             align-self: flex-start; 
+            position: relative; 
+            z-index: 2;
         }
 
         .single-month-day-cell .emoji-display-area {
@@ -248,6 +372,8 @@
             align-items: center; 
             width: 100%; 
             flex-grow: 1; 
+            position: relative; 
+            z-index: 2;
         }
 
         .single-month-day-cell .emoji-placeholder {
@@ -505,7 +631,8 @@
                 <button id="prevMonthSingleBtn" class="month-nav-button" aria-label="Mes anterior">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                 </button>
-                <h2 id="singleMonthYearDisplay" class="text-2xl font-semibold"></h2> <button id="nextMonthSingleBtn" class="month-nav-button" aria-label="Mes siguiente">
+                <h2 id="singleMonthYearDisplay" class="text-2xl font-semibold"></h2>
+                <button id="nextMonthSingleBtn" class="month-nav-button" aria-label="Mes siguiente">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </button>
             </div>
@@ -663,8 +790,8 @@
                 localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    showAuthMessage('Email o contraseña incorrectos. Asegúrate de que las cuentas de prueba existen en Firebase.', true);
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
+                    showAuthMessage('Email o contraseña incorrectos.', true);
                 } else {
                     showAuthMessage('Error al iniciar sesión: ' + error.message, true);
                 }
@@ -675,7 +802,7 @@
         fbAuth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUserId = user.uid;
-                if (loadingOverlay.style.display === 'none') {
+                if (loadingOverlay.style.display === 'none') { 
                     loadingOverlay.style.display = 'flex';
                 }
                 authMessage.style.display = 'none'; 
@@ -789,7 +916,7 @@
             currentModalMonth = monthIndex;
             currentModalYear = year;
             modalTitle.textContent = `${meses[monthIndex]} ${year}`;
-            generateModalCalendarGrid(monthIndex, year);
+            generateModalCalendarGrid(monthIndex, year); 
             monthModal.classList.add('active');
         }
         function closeMonthModal() {
@@ -808,7 +935,7 @@
             emojiPickerPanel.innerHTML = '';
             availableEmojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji || '🚫';
+                emojiSpan.textContent = emoji || '�';
                 emojiSpan.title = emoji ? emoji : "Borrar emoji";
                 emojiSpan.addEventListener('click', () => selectEmoji(emoji));
                 emojiPickerPanel.appendChild(emojiSpan);
@@ -950,24 +1077,31 @@
         }
 
         function generateModalCalendarGrid(monthIndex, year) {
-            modalCalendarGrid.innerHTML = '';
+            modalCalendarGrid.innerHTML = ''; 
             const hoy = new Date();
             diasSemana.forEach(diaNombre => {
                 const dayNameCell = document.createElement('div');
-                dayNameCell.className = 'modal-day-name'; dayNameCell.textContent = diaNombre;
+                dayNameCell.className = 'modal-day-name'; 
+                dayNameCell.textContent = diaNombre;
                 modalCalendarGrid.appendChild(dayNameCell);
             });
+
             const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
             const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
             const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
+
             for (let i = 0; i < celdasVaciasInicio; i++) {
                 const emptyCell = document.createElement('div');
-                emptyCell.className = 'modal-day-cell empty'; modalCalendarGrid.appendChild(emptyCell);
+                emptyCell.className = 'modal-day-cell empty'; 
+                modalCalendarGrid.appendChild(emptyCell);
             }
+
             for (let dia = 1; dia <= diasEnMes; dia++) {
-                const dayCell = document.createElement('div'); dayCell.className = 'modal-day-cell';
+                const dayCell = document.createElement('div');
+                dayCell.className = 'modal-day-cell'; 
                 const dayNumberSpan = document.createElement('span');
-                dayNumberSpan.className = 'modal-day-number'; dayNumberSpan.textContent = dia;
+                dayNumberSpan.className = 'modal-day-number'; 
+                dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
                 
                 const emojiArea = document.createElement('div'); 
@@ -987,25 +1121,40 @@
         }
 
         function generateSingleMonthCalendar(year, monthIndex) {
-            singleMonthCalendarGrid.innerHTML = '';
+            singleMonthCalendarGrid.innerHTML = ''; 
             singleMonthYearDisplay.textContent = `${meses[monthIndex]} ${year}`;
             const hoy = new Date();
+            const esMesActualReal = hoy.getFullYear() === year && hoy.getMonth() === monthIndex;
+
+            if (esMesActualReal) {
+                singleMonthCalendarGrid.classList.add('current-month-themed-grid');
+            } else {
+                singleMonthCalendarGrid.classList.remove('current-month-themed-grid');
+            }
+
             diasSemana.forEach(diaNombre => {
                 const dayNameCell = document.createElement('div');
-                dayNameCell.className = 'single-month-day-name'; dayNameCell.textContent = diaNombre;
+                dayNameCell.className = 'single-month-day-name';
+                dayNameCell.textContent = diaNombre;
                 singleMonthCalendarGrid.appendChild(dayNameCell);
             });
+
             const primerDiaDelMesRaw = new Date(year, monthIndex, 1).getDay();
             const celdasVaciasInicio = (primerDiaDelMesRaw + 6) % 7;
             const diasEnMes = new Date(year, monthIndex + 1, 0).getDate();
+
             for (let i = 0; i < celdasVaciasInicio; i++) {
                 const emptyCell = document.createElement('div');
-                emptyCell.className = 'single-month-day-cell empty'; singleMonthCalendarGrid.appendChild(emptyCell);
+                emptyCell.className = 'single-month-day-cell empty';
+                singleMonthCalendarGrid.appendChild(emptyCell);
             }
+
             for (let dia = 1; dia <= diasEnMes; dia++) {
-                const dayCell = document.createElement('div'); dayCell.className = 'single-month-day-cell';
+                const dayCell = document.createElement('div');
+                dayCell.className = 'single-month-day-cell';
                 const dayNumberSpan = document.createElement('span');
-                dayNumberSpan.className = 'single-month-day-number'; dayNumberSpan.textContent = dia;
+                dayNumberSpan.className = 'single-month-day-number';
+                dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
                 
                 const emojiArea = document.createElement('div'); 
@@ -1019,7 +1168,9 @@
                 const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
                 if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                 if (isHoliday(year, monthIndex, dia)) dayCell.classList.add('holiday-day');
-                if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+                if (monthIndex === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) {
+                    dayCell.classList.add('current-day');
+                }
                 singleMonthCalendarGrid.appendChild(dayCell);
             }
         }
@@ -1029,18 +1180,30 @@
             calendarYearDisplay.textContent = year;
             const hoy = new Date();
             meses.forEach((nombreMes, indiceMes) => {
-                const monthCard = document.createElement('div'); monthCard.className = 'month-card';
+                const monthCard = document.createElement('div'); 
+                monthCard.className = 'month-card'; 
+                
+                const esMesActualReal = hoy.getFullYear() === year && hoy.getMonth() === indiceMes;
+                if (esMesActualReal) {
+                    monthCard.id = 'currentMonthCard';
+                    monthCard.classList.add('current-month-card-themed'); 
+                } else {
+                    monthCard.classList.remove('current-month-card-themed'); 
+                }
+
                 monthCard.addEventListener('click', () => openMonthModal(indiceMes, year));
-                if (indiceMes === hoy.getMonth() && year === hoy.getFullYear()) monthCard.id = 'currentMonthCard';
                 
                 const monthHeader = document.createElement('h2');
-                monthHeader.className = 'month-header'; monthHeader.textContent = nombreMes;
+                monthHeader.className = 'month-header'; 
+                monthHeader.textContent = nombreMes;
                 monthCard.appendChild(monthHeader);
                 
-                const daysGridElement = document.createElement('div'); daysGridElement.className = 'days-grid';
+                const daysGridElement = document.createElement('div'); 
+                daysGridElement.className = 'days-grid';
                 diasSemana.forEach(diaNombre => {
                     const dayNameCell = document.createElement('div');
-                    dayNameCell.className = 'day-name'; dayNameCell.textContent = diaNombre;
+                    dayNameCell.className = 'day-name'; 
+                    dayNameCell.textContent = diaNombre;
                     daysGridElement.appendChild(dayNameCell);
                 });
                 
@@ -1050,28 +1213,34 @@
                 
                 for (let i = 0; i < celdasVaciasInicio; i++) {
                     const emptyCell = document.createElement('div');
-                    emptyCell.className = 'day-cell empty'; daysGridElement.appendChild(emptyCell);
+                    emptyCell.className = 'day-cell empty'; 
+                    daysGridElement.appendChild(emptyCell);
                 }
                 
                 for (let dia = 1; dia <= diasEnMes; dia++) {
-                    const dayCell = document.createElement('div'); dayCell.className = 'day-cell';
+                    const dayCell = document.createElement('div'); 
+                    dayCell.className = 'day-cell'; 
                     dayCell.textContent = dia;
                     
                     const diaDeSemanaActual = (celdasVaciasInicio + dia - 1) % 7;
                     if (diaDeSemanaActual === 5 || diaDeSemanaActual === 6) dayCell.classList.add('weekend-day');
                     if (isHoliday(year, indiceMes, dia)) dayCell.classList.add('holiday-day');
-                    if (indiceMes === hoy.getMonth() && dia === hoy.getDate() && year === hoy.getFullYear()) dayCell.classList.add('current-day');
+                    if (esMesActualReal && dia === hoy.getDate()) { 
+                        dayCell.classList.add('current-day');
+                    }
 
                     const dayKey = `${year}-${String(indiceMes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
                     if (dayEmojis[dayKey] && Object.keys(dayEmojis[dayKey]).length > 0) {
                         dayCell.classList.add('day-cell-changed');
                     }
+                    
                     daysGridElement.appendChild(dayCell);
                 }
                 monthCard.appendChild(daysGridElement);
                 calendarGrid.appendChild(monthCard);
             });
         }
+
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
         if (!fbAuth.currentUser) {
