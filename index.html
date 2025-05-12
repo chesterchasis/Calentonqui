@@ -541,9 +541,6 @@
         const fbDb = firebase.firestore();
         let currentUserId = null;
 
-        const allowedEmails = ['berbeci.yeison@gmail.com', 'kortisova.mariana@gmail.com'];
-        const commonPassword = 'tonqui123';
-
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loginPage = document.getElementById('loginPage');
@@ -657,13 +654,6 @@
             const passwordVal = passwordInput.value; 
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
-            if (!allowedEmails.includes(emailVal) || passwordVal !== commonPassword) {
-                showAuthMessage('Email o contraseña incorrectos para este demo.', true);
-                if (!allowedEmails.includes(emailVal)) {
-                    console.warn(`Intento de login con email no permitido: ${emailVal}. Asegúrate de que ${emailVal} (con contraseña '${commonPassword}') existe en tu Firebase Authentication.`);
-                }
-                return;
-            }
             showAuthMessage("Iniciando sesión...", false); 
             loadingOverlay.style.display = 'flex'; 
 
