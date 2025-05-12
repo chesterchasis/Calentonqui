@@ -593,11 +593,11 @@
                 font-size: 1rem;
                 margin-bottom: 10px;
             }
-            .day-name {
-                font-size: 0.7rem;
-                padding: 4px 2px;
+            .day-name { /* Para la vista anual en pantallas pequeñas */
+                font-size: 0.65rem; /* Reducido para que quepa más texto si es necesario */
+                padding: 4px 1px; /* Reducido el padding horizontal */
             }
-            .day-cell {
+            .day-cell { /* Para la vista anual en pantallas pequeñas */
                 font-size: 0.7rem;
                 min-height: 28px;
             }
@@ -612,54 +612,52 @@
                 padding-bottom: 10px;
             }
             .modal-title {
-                font-size: 1.2rem; /* Reducido de 1.5rem */
+                font-size: 1.2rem; 
             }
             .modal-close-button {
                 font-size: 1.5rem;
             }
             .modal-days-grid {
-                gap: 3px; /* Reducido de 8px */
+                gap: 3px; 
             }
             .modal-day-name {
-                font-size: 0.7rem; /* Reducido de 0.85rem */
-                padding: 5px 2px; /* Reducido */
+                font-size: 0.7rem; 
+                padding: 5px 2px; 
             }
             .modal-day-cell {
-                min-height: 60px; /* Reducido de 80px */
-                padding: 3px;    /* Reducido de 4px */
+                min-height: 60px; 
+                padding: 3px;    
                 border-radius: 6px;
             }
             .modal-day-number {
-                font-size: 0.6rem; /* Reducido de 0.7rem */
+                font-size: 0.6rem; 
                 top: 2px;
                 right: 3px;
             }
             .modal-day-cell .emoji-display-area {
-                gap: 2px; /* Reducido de 6px */
-                margin-top: 2px; /* Reducido de 5px */
-                /* Forzar que los placeholders se apilen si no caben */
+                gap: 2px; 
+                margin-top: 2px; 
                 flex-wrap: wrap; 
                 align-content: center;
             }
             .modal-day-cell .emoji-placeholder {
-                width: 22px;       /* Reducido de 24px */
-                height: 22px;      /* Reducido de 24px */
-                font-size: 14px;   /* Reducido de 18px */
+                width: 22px;       
+                height: 22px;      
+                font-size: 14px;   
             }
 
-            /* Ajustes para el panel de emojis en pantallas pequeñas */
             .emoji-picker-panel {
-                grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); /* Más flexible */
+                grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); 
                 padding: 8px;
                 gap: 4px;
-                max-width: 180px; /* Más pequeño */
+                max-width: 180px; 
             }
             .emoji-picker-panel span {
-                font-size: 18px; /* Ligeramente más pequeño */
+                font-size: 18px; 
                 padding: 3px;
             }
 
-            /* Ajustes para la vista de mes individual en pantallas pequeñas */
+            /* Ajustes para la VISTA DE MES INDIVIDUAL en pantallas pequeñas */
             .single-month-navigation-container {
                 gap: 0.5rem;
             }
@@ -671,29 +669,32 @@
                 height: 36px;
             }
             .single-month-days-grid {
-                padding: 10px;
-                gap: 5px;
+                padding: 8px; /* Reducido de 10px */
+                gap: 3px;     /* Reducido de 5px */
             }
             .single-month-day-name {
-                font-size: 0.7rem;
-                padding: 6px 3px;
+                font-size: 0.65rem; /* Reducido de 0.7rem */
+                padding: 5px 1px; /* Reducido padding horizontal */
+                margin-bottom: 4px; /* Ligeramente reducido */
             }
             .single-month-day-cell {
-                min-height: 70px; /* Reducido */
-                padding: 5px;
-                border-radius: 8px;
+                min-height: 65px; /* Reducido de 70px */
+                padding: 4px;     /* Reducido de 5px */
+                border-radius: 6px; /* Ligeramente más pequeño */
             }
             .single-month-day-number {
-                font-size: 0.75rem;
+                font-size: 0.7rem; /* Reducido de 0.75rem */
             }
             .single-month-day-cell .emoji-display-area {
-                gap: 4px;
-                padding-top: 4px;
+                gap: 2px;         /* Reducido de 4px */
+                padding-top: 2px; /* Reducido de 4px */
+                flex-wrap: wrap;  /* Permite que los emojis se apilen si no caben */
+                align-content: center; /* Centra los emojis si se apilan */
             }
             .single-month-day-cell .emoji-placeholder {
-                width: 26px;
-                height: 26px;
-                font-size: 18px;
+                width: 22px;      /* Reducido de 26px */
+                height: 22px;     /* Reducido de 26px */
+                font-size: 14px;  /* Reducido de 18px */
             }
         }
 
