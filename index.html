@@ -1092,8 +1092,8 @@
             emojiPickerPanel.innerHTML = '';
             availableEmojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji || '?';
-                emojiSpan.title = emoji ? emoji : "Borrar emoji";
+                emojiSpan.textContent = emoji || '🚫';
+                emojiSpan.title = emoji 🚫 emoji : "Borrar emoji";
                 emojiSpan.addEventListener('click', () => selectEmoji(emoji));
                 emojiPickerPanel.appendChild(emojiSpan);
             });
