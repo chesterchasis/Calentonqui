@@ -254,8 +254,7 @@
 
         .single-month-days-grid {
             gap: 10px; 
-            width: 100%; 
-            max-width: 900px; 
+            width: clamp(300px, 95%, 900px); /* Ajuste para responsividad */
             margin-left: auto; margin-right: auto; 
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
@@ -557,19 +556,137 @@
             font-size: 0.875rem;
             color: #374151;
         }
+
+        /* --- AJUSTES ADICIONALES PARA MÓVILES --- */
+        @media (max-width: 640px) {
+            .app-container {
+                padding: 10px; /* Reducir padding general si es necesario */
+            }
+
+            /* Vista de Mes Individual en Móvil */
+            .single-month-navigation-container {
+                gap: 0.5rem; /* Reducir espacio entre botones de navegación */
+                margin-bottom: 1rem;
+            }
+            #singleMonthYearDisplay {
+                font-size: 1.5rem; /* Reducir tamaño del título del mes */
+            }
+            .single-month-days-grid {
+                gap: 5px; /* Menor espacio entre celdas */
+                padding: 8px; /* Menor padding en la cuadrícula */
+            }
+            .single-month-day-name {
+                font-size: 0.7rem; /* Nombres de días más pequeños */
+                padding: 6px 2px;
+                margin-bottom: 4px;
+            }
+            .single-month-day-cell {
+                min-height: 75px; /* Altura mínima de celda reducida */
+                padding: 5px;     /* Padding interno de celda reducido */
+                border-radius: 8px;
+            }
+            .single-month-day-number {
+                font-size: 0.7rem; /* Número de día más pequeño */
+            }
+            .single-month-day-cell .emoji-placeholder {
+                width: 22px;  /* Emoji placeholder más pequeño */
+                height: 22px;
+                font-size: 16px; 
+            }
+            .single-month-day-cell .emoji-display-area {
+                gap: 4px; /* Espacio entre emojis reducido */
+                padding-top: 4px;
+            }
+
+            /* Tarjeta de Formulario de Login en Móvil */
+            .form-card {
+                padding: 25px; /* Menos padding en la tarjeta de login */
+                margin-left: 10px; /* Asegurar que no toque los bordes */
+                margin-right: 10px;
+            }
+            #loginPage h1 {
+                font-size: 1.75rem; /* Ajustar tamaño de título en login */
+            }
+
+            /* Modal en Móvil */
+            .modal-content {
+                padding: 15px; /* Padding reducido en el contenido del modal */
+                max-height: 95vh; /* Permitir que sea un poco más alto si es necesario */
+            }
+            .modal-title {
+                font-size: 1.25rem; /* Título del modal más pequeño */
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+            .modal-days-grid {
+                gap: 4px; /* Espacio entre celdas del modal reducido */
+            }
+            .modal-day-name {
+                font-size: 0.75rem;
+                padding: 6px 2px;
+            }
+            .modal-day-cell {
+                min-height: 60px; /* Altura de celda del modal reducida */
+                padding: 3px;
+                border-radius: 6px;
+            }
+            .modal-day-number {
+                font-size: 0.65rem; /* Número de día en modal más pequeño */
+                top: 2px;
+                right: 3px;
+            }
+            .modal-day-cell .emoji-placeholder {
+                width: 20px; /* Placeholder de emoji en modal más pequeño */
+                height: 20px;
+                font-size: 14px;
+            }
+            .modal-day-cell .emoji-display-area {
+                gap: 3px;
+                margin-top: 2px;
+            }
+
+            /* Controles superior-derecha */
+            .top-right-controls {
+                top: 10px;
+                right: 10px;
+            }
+            .control-button {
+                width: 36px;
+                height: 36px;
+            }
+            .control-button svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            /* Ajuste para la vista anual en móvil si es necesario */
+            .calendar-grid {
+                gap: 10px; /* Menor espacio entre tarjetas de mes */
+            }
+            .month-card {
+                padding: 15px; /* Menos padding en las tarjetas de mes */
+            }
+            .month-header {
+                font-size: 1rem; /* Título de mes más pequeño en vista anual */
+                margin-bottom: 10px;
+            }
+            .day-name, .day-cell { /* Para la vista anual mini-calendarios */
+                font-size: 0.7rem;
+                padding: 4px 2px;
+                min-height: 28px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div id="loadingOverlay" style="display: none;">
             <div class="loader"></div>
-            <p>Cargando calendario...</p>
-        </div>
+            <p id="loadingMessage">Cargando calendario...</p> </div>
 
         <div id="loginPage" class="login-container fade-in">
             <div class="form-card">
                 <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">CalenTonqui</h1>
-                <p class="text-center text-gray-600 mb-8">Inicia sesión para acceder.</p>
                 <form id="loginForm">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -617,9 +734,9 @@
         <div id="singleMonthViewPage" class="single-month-view-container" style="display: none;">
             <div class="top-right-controls">
                  <button id="toggleViewButtonSingle" class="control-button" aria-label="Cambiar Vista">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                     </svg>
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                       </svg>
                  </button>
                 <button id="logoutButtonSingle" class="control-button" aria-label="Cerrar Sesión">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -659,7 +776,7 @@
             authDomain: "calentonqui.firebaseapp.com",
             databaseURL: "https://calentonqui-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "calentonqui",
-            storageBucket: "calentonqui.firebasestorage.app",
+            storageBucket: "calentonqui.firebasestorage.app", // Corregido: firebasestorage.app
             messagingSenderId: "386155002525",
             appId: "1:386155002525:web:75a074d782f07e285a7274"
         };
@@ -670,6 +787,7 @@
 
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingMessage = document.getElementById('loadingMessage'); // Elemento para el mensaje de carga
         const loginPage = document.getElementById('loginPage');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -699,7 +817,7 @@
         const modalCloseButton = document.getElementById('modalCloseButton');
 
         const emojiPickerPanel = document.getElementById('emojiPickerPanel');
-        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', ''];
+        const availableEmojis = ['☀️', '👩🏻‍💻', '😍', '🤔', '🇪🇸', '🚀', '🚲', '🇸🇰', '😊', '🥳', '🏨', '🍕', '⚽️', '✈️', '🌙', '📚', '❤️', '💡', '🚫'];
 
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
@@ -716,7 +834,9 @@
         let currentEditingDayKey = null;
         let currentEditingPlaceholderKey = null;
 
-        const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
+        let loginLoadingTimer = null; // Timer para mensajes de carga del login
+
+        const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3); // Enero es mes 0
         const workSequencePattern = [
             'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
             'TN', 'TN', 'L',  'L',  'TN', 'TN', 'TN', 'L',  'L',  'TN',
@@ -781,27 +901,54 @@
             const passwordVal = passwordInput.value; 
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
-            showAuthMessage("Iniciando sesión...", false); 
+            authMessage.style.display = 'none'; // Ocultar mensaje de autenticación anterior
+
+            loadingMessage.textContent = "Verificando..."; // Mensaje inicial de carga
             loadingOverlay.style.display = 'flex'; 
+
+            if (loginLoadingTimer) { // Limpiar temporizador anterior
+                clearTimeout(loginLoadingTimer);
+            }
+
+            loginLoadingTimer = setTimeout(() => { // Nuevo temporizador
+                if (loadingOverlay.style.display === 'flex') { // Solo si sigue cargando
+                    loadingMessage.textContent = "hola tonquito!";
+                }
+            }, 5000); // 5 segundos
 
             try {
                 await fbAuth.setPersistence(persistence);
                 await fbAuth.signInWithEmailAndPassword(emailVal, passwordVal);
                 localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
+                // onAuthStateChanged se encargará del resto y de limpiar el timer
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
+                if (error.code === 'auth/user-not-found' || 
+                    error.code === 'auth/wrong-password' || 
+                    error.code === 'auth/invalid-credential' || 
+                    error.code === 'auth/invalid-email') {
                     showAuthMessage('Email o contraseña incorrectos.', true);
                 } else {
                     showAuthMessage('Error al iniciar sesión: ' + error.message, true);
                 }
                 loadingOverlay.style.display = 'none'; 
+                if (loginLoadingTimer) { // Limpiar el temporizador en caso de error
+                    clearTimeout(loginLoadingTimer);
+                    loginLoadingTimer = null;
+                }
             }
         });
 
         fbAuth.onAuthStateChanged(async (user) => {
+            if (loginLoadingTimer) { // Siempre limpiar el timer de login al cambiar estado
+                clearTimeout(loginLoadingTimer);
+                loginLoadingTimer = null;
+            }
+
             if (user) {
                 currentUserId = user.uid;
+                
+                loadingMessage.textContent = "Cargando calendario..."; // Mensaje para carga de calendario
                 if (loadingOverlay.style.display === 'none') { 
                     loadingOverlay.style.display = 'flex';
                 }
@@ -828,7 +975,6 @@
                 rememberMeCheckbox.checked = remembered;
                 
                 loadingOverlay.style.display = 'none'; 
-
             } else {
                 currentUserId = null;
                 dayEmojis = {}; 
@@ -841,20 +987,25 @@
                 hideEmojiPicker();
                 emailInput.value = ''; 
                 passwordInput.value = '';
-                showAuthMessage("Sesión cerrada o no iniciada.", false);
-                setTimeout(() => authMessage.style.display = 'none', 2000);
+                loadingMessage.textContent = "Cargando calendario..."; // Restaurar mensaje por defecto
                 loadingOverlay.style.display = 'none'; 
             }
         });
 
         function handleLogout() {
-            showAuthMessage("Cerrando sesión...", false);
+            loadingMessage.textContent = "Cerrando sesión..."; // Mensaje para el overlay al cerrar sesión
             loadingOverlay.style.display = 'flex'; 
+
+            if (loginLoadingTimer) { // Limpiar timer de login si estuviera activo
+                clearTimeout(loginLoadingTimer);
+                loginLoadingTimer = null;
+            }
+
             fbAuth.signOut()
                 .catch(error => { 
                     console.error("Error al cerrar sesión:", error);
                     showAuthMessage("Error al cerrar sesión.", true);
-                    loadingOverlay.style.display = 'none'; 
+                    // loadingOverlay.style.display = 'none'; // onAuthStateChanged lo manejará
                 });
         }
         logoutButton.addEventListener('click', handleLogout);
@@ -935,7 +1086,7 @@
             emojiPickerPanel.innerHTML = '';
             availableEmojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji || '�';
+                emojiSpan.textContent = emoji || '?';
                 emojiSpan.title = emoji ? emoji : "Borrar emoji";
                 emojiSpan.addEventListener('click', () => selectEmoji(emoji));
                 emojiPickerPanel.appendChild(emojiSpan);
@@ -1243,9 +1394,10 @@
 
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
-        if (!fbAuth.currentUser) {
+        if (!fbAuth.currentUser) { // Solo si no hay usuario, ocultar overlay al inicio
             loadingOverlay.style.display = 'none';
         }
+        // El resto de la lógica de mostrar/ocultar el overlay se maneja en onAuthStateChanged y login
     </script>
 </body>
 </html>
