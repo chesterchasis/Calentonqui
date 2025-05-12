@@ -13,37 +13,37 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            color: #1f2937;
+            background-color: #f0f2f5; 
+            color: #1f2937; 
         }
         .app-container {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center; /* Centra el login y el spinner de carga inicial */
+            align-items: center; 
+            justify-content: center; 
             padding: 20px;
-            position: relative; /* Para el overlay de carga */
+            position: relative; 
         }
         /* Overlay de Carga */
         #loadingOverlay {
-            position: fixed; /* Cubre toda la ventana */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(240, 242, 245, 0.95); /* Fondo semi-transparente */
+            background-color: rgba(240, 242, 245, 0.95); 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 2000; /* Por encima de todo */
+            z-index: 2000; 
             color: #1f2937;
             font-size: 1.2rem;
         }
         .loader {
-            border: 5px solid #e5e7eb; /* Gris claro */
-            border-top: 5px solid #4f46e5; /* Azul principal */
+            border: 5px solid #e5e7eb; 
+            border-top: 5px solid #4f46e5; 
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -55,17 +55,27 @@
             100% { transform: rotate(360deg); }
         }
 
-        .login-container, .calendar-container, .single-month-view-container {
+        /* Contenedor de Login */
+        .login-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-        .single-month-view-container, .calendar-container {
-            padding-top: 70px; /* Espacio para los controles superiores fijos */
-             justify-content: flex-start; /* Alinea el contenido al inicio después de la carga */
+            align-items: center; 
+            justify-content: center; 
+            flex-grow: 1; 
         }
 
+        /* Contenedores de las vistas de Calendario */
+        .calendar-container, .single-month-view-container {
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; 
+            padding-top: 70px; 
+            justify-content: flex-start; 
+            flex-grow: 1; 
+        }
+        
         .form-card {
             background-color: white;
             padding: 40px; border-radius: 12px;
@@ -94,6 +104,7 @@
         .calendar-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px; width: 100%; max-width: 1200px; margin-top: 20px;
+            margin-left: auto; margin-right: auto; 
         }
         .month-card {
             background-color: white; padding: 20px; border-radius: 12px;
@@ -128,30 +139,27 @@
             font-weight: bold !important; border: 2px solid #0d9488;
         }
         .day-cell.holiday-day.current-day { background-color: #0f766e !important; color: white !important; }
-
         .day-cell.day-cell-changed::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 5px;
-            height: 5px;
-            background-color: #3b82f6;
-            border-radius: 50%;
+            content: ''; position: absolute; bottom: 2px; left: 50%;
+            transform: translateX(-50%); width: 5px; height: 5px;
+            background-color: #3b82f6; border-radius: 50%;
             box-shadow: 0 0 1px rgba(0,0,0,0.3);
         }
-        .day-cell.current-day.day-cell-changed::after {
-            background-color: white;
-        }
+        .day-cell.current-day.day-cell-changed::after { background-color: white; }
 
         .year-navigation-container, .single-month-navigation-container {
             display: flex; align-items: center; justify-content: center;
-            gap: 1rem; margin-bottom: 1.5rem; width:100%;
-            max-width: 900px; margin-left:auto; margin-right:auto;
+            gap: 1rem; /* Espacio entre botones y título */
+            width:100%;
+            max-width: 900px; 
+            margin-left:auto; margin-right:auto;
         }
         .year-navigation-container { margin-bottom: 2rem;}
-        .single-month-navigation-container { margin-top: 1rem; }
+        .single-month-navigation-container { 
+            margin-top: 1rem; 
+            margin-bottom: 1.5rem; /* Espacio debajo de la barra de navegación del mes */
+        }
+
 
         .year-nav-button, .month-nav-button {
             background-color: white; border: 1px solid #d1d5db;
@@ -167,7 +175,136 @@
         .year-nav-button svg, .month-nav-button svg { width: 20px; height: 20px; }
 
         #calendarYearDisplay { font-size: 1.875rem; font-weight: 700; color: #1f2937; }
-        #singleMonthYearDisplay { font-size: 1.75rem; font-weight: 600; color: #1f2937; text-align: center; }
+        
+        #singleMonthYearDisplay {
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: #111827; 
+            /* margin-bottom: 1.5rem; */ /* Eliminado para que align-items del contenedor funcione mejor */
+            line-height: 1; /* Ajustar si es necesario para un centrado vertical más preciso con los botones */
+        }
+
+        .single-month-day-name {
+            font-size: 0.8rem; 
+            font-weight: 600;
+            color: #4b5563; 
+            padding: 10px 5px;
+            background-color: #f9fafb; 
+            border-radius: 8px; 
+            margin-bottom: 6px; 
+            text-transform: uppercase; 
+        }
+
+        .single-month-days-grid {
+            gap: 10px; 
+            width: 100%; 
+            max-width: 900px; 
+            margin-left: auto; margin-right: auto; 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            text-align: center; 
+        }
+
+        .single-month-day-cell {
+            background-color: #ffffff; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 10px; 
+            min-height: 100px; 
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; 
+            justify-content: space-between; 
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .single-month-day-cell:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            transform: translateY(-2px);
+        }
+
+        .single-month-day-cell.empty {
+            background-color: #f8fafc; 
+            border-color: transparent; 
+            box-shadow: none;
+            transform: none;
+        }
+        .single-month-day-cell.empty:hover {
+            background-color: #f8fafc; 
+        }
+
+        .single-month-day-number {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151; 
+            align-self: flex-start; 
+        }
+
+        .single-month-day-cell .emoji-display-area {
+            margin-top: auto; 
+            padding-top: 8px; 
+            justify-content: center; 
+            display: flex; 
+            gap: 6px; 
+            align-items: center; 
+            width: 100%; 
+            flex-grow: 1; 
+        }
+
+        .single-month-day-cell .emoji-placeholder {
+            width: 30px; 
+            height: 30px;
+            font-size: 20px; 
+            background-color: #f3f4f6; 
+            border: 1px dashed #d1d5db; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%; 
+        }
+        .single-month-day-cell .emoji-placeholder:hover {
+            background-color: #e5e7eb; 
+            border-style: solid; 
+        }
+        .single-month-day-cell .emoji-placeholder.has-emoji {
+            background-color: transparent;
+            border: 1px solid transparent; 
+        }
+        .single-month-day-cell .emoji-placeholder.has-emoji:hover {
+            background-color: #f0f2f580; 
+            border-radius: 50%; 
+        }
+
+        .single-month-day-cell.weekend-day {
+            background-color: #f8f9fa; 
+        }
+        .single-month-day-cell.weekend-day .single-month-day-number {
+            color: #52525b; 
+        }
+
+        .single-month-day-cell.holiday-day {
+            background-color: #fff1f2; 
+            border-color: #ffdde1; 
+        }
+        .single-month-day-cell.holiday-day .single-month-day-number {
+            color: #be123c; 
+            font-weight: 700;
+        }
+
+        .single-month-day-cell.current-day {
+            background-color: #ecfdf5 !important; 
+            border: 2px solid #10b981 !important; 
+        }
+        .single-month-day-cell.current-day .single-month-day-number {
+            color: #059669 !important; 
+            font-weight: 700;
+        }
+        .single-month-day-cell.holiday-day.current-day {
+            background-color: #fdf2f8 !important; 
+            border-color: #ec4899 !important; 
+        }
+        .single-month-day-cell.holiday-day.current-day .single-month-day-number {
+            color: #be185d !important; 
+        }
 
         .top-right-controls {
             position: fixed;
@@ -219,54 +356,50 @@
         }
         .modal-close-button:hover { color: #1f2937; }
 
-        .modal-days-grid, .single-month-days-grid {
+        .modal-days-grid {
             display: grid; grid-template-columns: repeat(7, 1fr);
             gap: 8px; text-align: center; width: 100%;
             max-width: 900px; margin: 0 auto;
         }
-        .modal-day-name, .single-month-day-name {
+        .modal-day-name {
             font-size: 0.85rem; font-weight: 500;
             color: #6b7280; padding: 8px 5px; display: flex; align-items: center; justify-content: center;
         }
-        .modal-day-cell, .single-month-day-cell {
+        .modal-day-cell {
             position: relative; color: #374151;
             border-radius: 8px; min-height: 80px; padding: 4px;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             border: 1px solid #e5e7eb; height: auto;
         }
-        .modal-day-number, .single-month-day-number {
+        .modal-day-number {
             position: absolute; top: 3px; right: 5px;
             font-size: 0.7rem; color: #9ca3af; line-height: 1;
         }
-        .emoji-display-area {
+        .modal-day-cell .emoji-display-area {
             display: flex; gap: 6px; align-items: center; justify-content: center;
             width: 100%; flex-grow: 1; margin-top: 5px;
         }
-        .emoji-placeholder {
+        .modal-day-cell .emoji-placeholder {
             width: 24px; height: 24px; background-color: #e0e0e0;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 18px; color: #374151; cursor: pointer;
             transition: background-color 0.2s;
         }
-        .emoji-placeholder:hover { background-color: #d1d5db; }
-        .emoji-placeholder.has-emoji { background-color: transparent; }
+        .modal-day-cell .emoji-placeholder:hover { background-color: #d1d5db; }
+        .modal-day-cell .emoji-placeholder.has-emoji { background-color: transparent; }
 
-        .modal-day-cell.empty, .single-month-day-cell.empty { background-color: #f9fafb; border-color: #f9fafb; }
-        .modal-day-cell.weekend-day, .single-month-day-cell.weekend-day { background-color: #f3f4f6; }
-        .modal-day-cell.holiday-day, .single-month-day-cell.holiday-day { background-color: #fee2e2; border-color: #fecaca; }
-        .modal-day-cell.holiday-day .modal-day-number,
-        .single-month-day-cell.holiday-day .single-month-day-number { color: #b91c1c; }
+        .modal-day-cell.empty { background-color: #f9fafb; border-color: #f9fafb; }
+        .modal-day-cell.weekend-day { background-color: #f3f4f6; }
+        .modal-day-cell.holiday-day { background-color: #fee2e2; border-color: #fecaca; }
+        .modal-day-cell.holiday-day .modal-day-number { color: #b91c1c; }
 
-        .modal-day-cell.current-day, .single-month-day-cell.current-day {
+        .modal-day-cell.current-day {
             background-color: #ccfbf1 !important; border-color: #5eead4 !important;
         }
-        .modal-day-cell.current-day .modal-day-number,
-        .single-month-day-cell.current-day .single-month-day-number { color: #0d9488 !important; font-weight: 600; }
-        .modal-day-cell.holiday-day.current-day,
-        .single-month-day-cell.holiday-day.current-day { background-color: #fecaca !important; border-color: #f87171 !important; }
-        .modal-day-cell.holiday-day.current-day .modal-day-number,
-        .single-month-day-cell.holiday-day.current-day .single-month-day-number { color: #b91c1c !important; }
+        .modal-day-cell.current-day .modal-day-number { color: #0d9488 !important; font-weight: 600; }
+        .modal-day-cell.holiday-day.current-day { background-color: #fecaca !important; border-color: #f87171 !important; }
+        .modal-day-cell.holiday-day.current-day .modal-day-number { color: #b91c1c !important; }
 
         .emoji-picker-panel {
             position: absolute; background-color: white;
@@ -372,8 +505,7 @@
                 <button id="prevMonthSingleBtn" class="month-nav-button" aria-label="Mes anterior">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                 </button>
-                <h2 id="singleMonthYearDisplay" class="text-2xl font-semibold"></h2>
-                <button id="nextMonthSingleBtn" class="month-nav-button" aria-label="Mes siguiente">
+                <h2 id="singleMonthYearDisplay" class="text-2xl font-semibold"></h2> <button id="nextMonthSingleBtn" class="month-nav-button" aria-label="Mes siguiente">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </button>
             </div>
@@ -394,7 +526,7 @@
     </div>
 
     <script>
-        // Firebase configuration (mantener la configuración proporcionada por el usuario)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyD0zentUNqgouFTVD3i3wKLruRQkgMZt_Y",
             authDomain: "calentonqui.firebaseapp.com",
@@ -404,18 +536,16 @@
             messagingSenderId: "386155002525",
             appId: "1:386155002525:web:75a074d782f07e285a7274"
         };
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const fbAuth = firebase.auth();
         const fbDb = firebase.firestore();
         let currentUserId = null;
 
-        // Credenciales de prueba (mantener como en el código original)
         const allowedEmails = ['berbeci.yeison@gmail.com', 'kortisova.mariana@gmail.com'];
         const commonPassword = 'tonqui123';
 
-        // Elementos del DOM
-        const loadingOverlay = document.getElementById('loadingOverlay'); // Nuevo: Overlay de carga
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
         const loginPage = document.getElementById('loginPage');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -462,7 +592,6 @@
         let currentEditingDayKey = null;
         let currentEditingPlaceholderKey = null;
 
-        // Configuración de secuencia de trabajo y festivos (mantener como en el código original)
         const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
         const workSequencePattern = [
             'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
@@ -490,16 +619,13 @@
 
         async function loadDayEmojisFromFirestore() {
             if (!currentUserId) return;
-            // No mostramos mensaje de "Cargando emojis..." aquí, ya que el overlay general lo cubre.
             try {
                 const emojisSnapshot = await fbDb.collection('users').doc(currentUserId).collection('emojis').get();
                 dayEmojis = {};
                 emojisSnapshot.forEach(doc => {
                     dayEmojis[doc.id] = doc.data();
                 });
-                // No mostramos mensaje de "Emojis cargados" aquí.
                 
-                // Regenerar la vista actual después de cargar los emojis
                 if (calendarPage.style.display === 'flex') generateCalendar(currentDisplayedYear);
                 if (singleMonthViewPage.style.display === 'flex') generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
                 if (monthModal.classList.contains('active')) {
@@ -507,7 +633,6 @@
                 }
             } catch (error) {
                 console.error("Error loading emojis from Firestore: ", error);
-                // Considerar mostrar un error más visible si falla la carga, aunque el overlay se oculte.
                 showAuthMessage("Error al cargar emojis desde la base de datos.", true);
             }
         }
@@ -528,8 +653,8 @@
 
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const emailVal = emailInput.value; // Renombrado para evitar conflicto con la variable global 'email' si existiera
-            const passwordVal = passwordInput.value; // Renombrado
+            const emailVal = emailInput.value; 
+            const passwordVal = passwordInput.value; 
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
             if (!allowedEmails.includes(emailVal) || passwordVal !== commonPassword) {
@@ -539,14 +664,13 @@
                 }
                 return;
             }
-            showAuthMessage("Iniciando sesión...", false); // Este mensaje se verá brevemente antes del overlay
-            loadingOverlay.style.display = 'flex'; // Mostrar overlay de carga ANTES de intentar el login
+            showAuthMessage("Iniciando sesión...", false); 
+            loadingOverlay.style.display = 'flex'; 
 
             try {
                 await fbAuth.setPersistence(persistence);
-                const userCredential = await fbAuth.signInWithEmailAndPassword(emailVal, passwordVal);
+                await fbAuth.signInWithEmailAndPassword(emailVal, passwordVal);
                 localStorage.setItem('calendarRememberMe', rememberMeCheckbox.checked);
-                // onAuthStateChanged se encargará del resto (navegación, carga de datos, ocultar overlay)
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -554,28 +678,30 @@
                 } else {
                     showAuthMessage('Error al iniciar sesión: ' + error.message, true);
                 }
-                loadingOverlay.style.display = 'none'; // Ocultar overlay si el login falla
+                loadingOverlay.style.display = 'none'; 
             }
         });
 
         fbAuth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUserId = user.uid;
-                // El overlay ya debería estar visible si el login fue exitoso desde el submit handler.
-                // Si es por persistencia, lo mostramos aquí.
                 if (loadingOverlay.style.display === 'none') {
                     loadingOverlay.style.display = 'flex';
                 }
-                authMessage.style.display = 'none'; // Ocultar mensajes de login previos
+                authMessage.style.display = 'none'; 
 
                 loginPage.style.display = 'none';
-                calendarPage.style.display = 'flex';
-                singleMonthViewPage.style.display = 'none';
-                calendarPage.classList.add('fade-in'); // Aplicar fade-in a la página del calendario
+                if (singleMonthViewPage.style.display !== 'flex') { 
+                    calendarPage.style.display = 'flex';
+                    calendarPage.classList.add('fade-in');
+                } else { 
+                    singleMonthViewPage.style.display = 'flex';
+                    singleMonthViewPage.classList.add('fade-in');
+                }
 
-                await loadDayEmojisFromFirestore(); // Carga emojis y regenera vistas
+                await loadDayEmojisFromFirestore(); 
 
-                if (currentDisplayedYear === new Date().getFullYear()) {
+                if (calendarPage.style.display === 'flex' && currentDisplayedYear === new Date().getFullYear()) {
                     const currentMonthElement = document.getElementById('currentMonthCard');
                     if (currentMonthElement) {
                         setTimeout(() => currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }), 100);
@@ -584,7 +710,7 @@
                 const remembered = localStorage.getItem('calendarRememberMe') === 'true';
                 rememberMeCheckbox.checked = remembered;
                 
-                loadingOverlay.style.display = 'none'; // Ocultar overlay DESPUÉS de que todo esté cargado
+                loadingOverlay.style.display = 'none'; 
 
             } else {
                 currentUserId = null;
@@ -600,21 +726,18 @@
                 passwordInput.value = '';
                 showAuthMessage("Sesión cerrada o no iniciada.", false);
                 setTimeout(() => authMessage.style.display = 'none', 2000);
-                loadingOverlay.style.display = 'none'; // Asegurarse que el overlay esté oculto al cerrar sesión
+                loadingOverlay.style.display = 'none'; 
             }
         });
 
         function handleLogout() {
             showAuthMessage("Cerrando sesión...", false);
-            loadingOverlay.style.display = 'flex'; // Mostrar overlay durante el cierre de sesión
+            loadingOverlay.style.display = 'flex'; 
             fbAuth.signOut()
-                .then(() => {
-                    // onAuthStateChanged se encargará de ocultar el overlay y mostrar la página de login
-                })
-                .catch(error => {
+                .catch(error => { 
                     console.error("Error al cerrar sesión:", error);
                     showAuthMessage("Error al cerrar sesión.", true);
-                    loadingOverlay.style.display = 'none'; // Ocultar overlay si hay error
+                    loadingOverlay.style.display = 'none'; 
                 });
         }
         logoutButton.addEventListener('click', handleLogout);
@@ -633,8 +756,8 @@
             calendarPage.style.display = 'none';
             singleMonthViewPage.style.display = 'flex';
             singleMonthViewPage.classList.add('fade-in');
-            currentSingleViewYear = currentDisplayedYear;
-            currentSingleViewMonth = new Date().getMonth();
+            currentSingleViewYear = currentDisplayedYear; 
+            currentSingleViewMonth = new Date().getMonth(); 
             generateSingleMonthCalendar(currentSingleViewYear, currentSingleViewMonth);
             hideEmojiPicker();
         }
@@ -643,7 +766,7 @@
             singleMonthViewPage.style.display = 'none';
             calendarPage.style.display = 'flex';
             calendarPage.classList.add('fade-in');
-            generateCalendar(currentDisplayedYear);
+            generateCalendar(currentDisplayedYear); 
             hideEmojiPicker();
             if (currentDisplayedYear === new Date().getFullYear()) {
                 const currentMonthElement = document.getElementById('currentMonthCard');
@@ -756,8 +879,9 @@
                             const sequenceIndex = dayDiff % workSequencePattern.length;
                             if (sequenceIndex >= 0) {
                                 const workCode = workSequencePattern[sequenceIndex];
-                                currentEditingPlaceholder.textContent = workEmojisMap[workCode] || '';
-                                if (workEmojisMap[workCode]) currentEditingPlaceholder.classList.add('has-emoji');
+                                const workEmoji = workEmojisMap[workCode]; 
+                                currentEditingPlaceholder.textContent = workEmoji || '';
+                                if (workEmoji) currentEditingPlaceholder.classList.add('has-emoji');
                             }
                         } else {
                              currentEditingPlaceholder.textContent = '';
@@ -795,14 +919,14 @@
         
         function createEmojiPlaceholder(dayKey, placeholderKey, year, monthIndex, day) {
             const placeholder = document.createElement('div');
-            placeholder.className = 'emoji-placeholder';
+            placeholder.className = 'emoji-placeholder'; 
             
             const userEmoji = dayEmojis[dayKey] && dayEmojis[dayKey][placeholderKey];
 
             if (userEmoji) {
                 placeholder.textContent = userEmoji;
                 placeholder.classList.add('has-emoji');
-            } else {
+            } else { 
                 if (placeholderKey === 'placeholder1') {
                     placeholder.textContent = '🏡'; 
                     placeholder.classList.add('has-emoji');
@@ -818,12 +942,12 @@
                             if (workEmoji) {
                                 placeholder.textContent = workEmoji;
                                 placeholder.classList.add('has-emoji');
-                            } else {
+                            } else { 
                                 placeholder.textContent = ''; 
                             }
-                        } else { placeholder.textContent = ''; }
-                    } else { placeholder.textContent = ''; }
-                } else {
+                        } else { placeholder.textContent = ''; } 
+                    } else { placeholder.textContent = ''; } 
+                } else { 
                     placeholder.textContent = ''; 
                 }
             }
@@ -856,7 +980,8 @@
                 dayNumberSpan.className = 'modal-day-number'; dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
                 
-                const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
+                const emojiArea = document.createElement('div'); 
+                emojiArea.className = 'emoji-display-area'; 
                 const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
                 emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder1', year, monthIndex, dia));
@@ -893,7 +1018,8 @@
                 dayNumberSpan.className = 'single-month-day-number'; dayNumberSpan.textContent = dia;
                 dayCell.appendChild(dayNumberSpan);
                 
-                const emojiArea = document.createElement('div'); emojiArea.className = 'emoji-display-area';
+                const emojiArea = document.createElement('div'); 
+                emojiArea.className = 'emoji-display-area'; 
                 const dayKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
                 emojiArea.appendChild(createEmojiPlaceholder(dayKey, 'placeholder1', year, monthIndex, dia));
@@ -908,7 +1034,7 @@
             }
         }
 
-        function generateCalendar(year) {
+        function generateCalendar(year) { 
             calendarGrid.innerHTML = '';
             calendarYearDisplay.textContent = year;
             const hoy = new Date();
@@ -950,18 +1076,14 @@
                     if (dayEmojis[dayKey] && Object.keys(dayEmojis[dayKey]).length > 0) {
                         dayCell.classList.add('day-cell-changed');
                     }
-                    
                     daysGridElement.appendChild(dayCell);
                 }
                 monthCard.appendChild(daysGridElement);
                 calendarGrid.appendChild(monthCard);
             });
         }
-
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
-        // La carga inicial y la generación del calendario son manejadas por onAuthStateChanged.
-        // Asegurarse de que el overlay de carga esté oculto inicialmente si no hay sesión.
         if (!fbAuth.currentUser) {
             loadingOverlay.style.display = 'none';
         }
