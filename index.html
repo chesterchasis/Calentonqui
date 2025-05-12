@@ -161,7 +161,7 @@
         .current-month-card-themed .month-header {
             color: #FFFFFF;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-            background-color: rgba(0,0,0,0.5); /* Ajustado para más opacidad */
+            background-color: rgba(0,0,0,0.5); 
             border-radius: 6px 6px 0 0;
             padding: 5px;
             margin-bottom: 10px; 
@@ -170,30 +170,30 @@
             color: #f0f0f0; 
             text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
             font-weight: 600;
-            background-color: rgba(0,0,0,0.3); /* Ajustado para más opacidad */
+            background-color: rgba(0,0,0,0.3); 
             border-radius: 3px;
         }
         .current-month-card-themed .day-cell {
             color: #FFFFFF; 
             text-shadow: 1px 1px 2px rgba(0,0,0,0.7), 0 0 4px rgba(0,0,0,0.5); 
-            background-color: rgba(0,0,0,0.4); /* Ajustado para más opacidad */
+            background-color: rgba(0,0,0,0.4); 
             border-radius: 4px;
         }
         .current-month-card-themed .day-cell.empty {
-            background-color: rgba(0,0,0,0.2); /* Ajustado */
+            background-color: rgba(0,0,0,0.2); 
             color: transparent; 
             text-shadow: none;
         }
         .current-month-card-themed .day-cell.weekend-day {
-            background-color: rgba(0,0,0,0.45); /* Ajustado */
+            background-color: rgba(0,0,0,0.45); 
         }
         .current-month-card-themed .day-cell.holiday-day {
-            background-color: rgba(255, 105, 97, 0.8) !important; /* Ajustado a 0.8 */
+            background-color: rgba(255, 105, 97, 0.8) !important; 
             color: #fff !important;
             text-shadow: 1px 1px 2px rgba(80,0,0,0.7);
         }
         .current-month-card-themed .day-cell.current-day { 
-            background-color: rgba(255, 215, 0, 0.8) !important; /* Ajustado a 0.8 */
+            background-color: rgba(255, 215, 0, 0.8) !important; 
             color: #333 !important;
             text-shadow: none;
             border: 1px solid #DAA520 !important; 
@@ -265,7 +265,6 @@
             position: relative; 
         }
         
-        /* Tema para el mes actual en la VISTA DE MES INDIVIDUAL */
         .current-month-themed-grid {
             background-image: url('https://raw.githubusercontent.com/chesterchasis/Calentonqui/main/mayo.jpg'); 
             background-size: cover; 
@@ -274,15 +273,14 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        /* Ajustes para la legibilidad sobre el fondo temático (imagen) en VISTA DE MES INDIVIDUAL */
         .current-month-themed-grid .single-month-day-name {
-            background-color: rgba(255, 255, 255, 0.8); /* Más opaco */
+            background-color: rgba(255, 255, 255, 0.8);
             color: #2c1e1a; 
             font-weight: 700;
         }
         .current-month-themed-grid .single-month-day-cell {
-            background-color: rgba(255, 255, 255, 0.9); /* Ajustado a 0.9 para menos transparencia */
-            border: 1px solid rgba(255,255,255,0.75); /* Borde un poco más opaco */
+            background-color: rgba(255, 255, 255, 0.9); 
+            border: 1px solid rgba(255,255,255,0.75); 
             position: relative; 
             z-index: 2; 
         }
@@ -295,21 +293,21 @@
             text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5); 
         }
         .current-month-themed-grid .single-month-day-cell.empty {
-            background-color: rgba(255,255,255,0.6); /* Más opaco */
+            background-color: rgba(255,255,255,0.6); 
             border-color: transparent;
         }
         .current-month-themed-grid .single-month-day-cell.weekend-day {
-            background-color: rgba(255, 255, 255, 0.88); /* Ajustado */
+            background-color: rgba(255, 255, 255, 0.88); 
         }
         .current-month-themed-grid .single-month-day-cell.holiday-day {
-            background-color: rgba(253, 232, 232, 0.9); /* Ajustado */
-            border-color: rgba(252, 192, 192, 0.9); /* Ajustado */
+            background-color: rgba(253, 232, 232, 0.9); 
+            border-color: rgba(252, 192, 192, 0.9); 
         }
         .current-month-themed-grid .single-month-day-cell.holiday-day .single-month-day-number {
             color: #8C1C1C;
         }
         .current-month-themed-grid .single-month-day-cell.current-day {
-            background-color: rgba(255, 230, 153, 0.9) !important; /* Ajustado */
+            background-color: rgba(255, 230, 153, 0.9) !important; 
             border: 2px solid #FFC107 !important;
         }
         .current-month-themed-grid .single-month-day-cell.current-day .single-month-day-number {
@@ -317,15 +315,14 @@
             text-shadow: none; 
         }
         .current-month-themed-grid .emoji-placeholder {
-            background-color: rgba(255,255,255,0.7); /* Más opaco */
-            border: 1px dashed rgba(80,80,80,0.75); /* Más opaco */
+            background-color: rgba(255,255,255,0.7); 
+            border: 1px dashed rgba(80,80,80,0.75); 
         }
         .current-month-themed-grid .emoji-placeholder.has-emoji {
              background-color: transparent;
              border: 1px solid transparent;
              text-shadow: 0 0 2px rgba(0,0,0,0.3); 
         }
-
 
         .single-month-day-cell { 
             background-color: #ffffff; 
@@ -557,13 +554,156 @@
             font-size: 0.875rem;
             color: #374151;
         }
+
+        /* Optimizaciones para pantallas pequeñas (ej. iPhone no-Plus) */
+        @media (max-width: 420px) {
+            .form-card {
+                padding: 20px;
+            }
+            .calendar-container, .single-month-view-container {
+                padding-top: 60px; 
+            }
+            .top-right-controls {
+                top: 10px;
+                right: 10px;
+            }
+            .control-button {
+                width: 36px;
+                height: 36px;
+            }
+            .control-button svg {
+                width: 18px;
+                height: 18px;
+            }
+            .year-navigation-container {
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+            #calendarYearDisplay {
+                font-size: 1.5rem;
+            }
+            .year-nav-button {
+                width: 36px;
+                height: 36px;
+            }
+            .month-card {
+                padding: 15px;
+            }
+            .month-header {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            .day-name {
+                font-size: 0.7rem;
+                padding: 4px 2px;
+            }
+            .day-cell {
+                font-size: 0.7rem;
+                min-height: 28px;
+            }
+
+            /* Ajustes específicos para el MODAL en pantallas pequeñas */
+            .modal-content {
+                padding: 15px;
+                width: 95%; 
+            }
+            .modal-header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            .modal-title {
+                font-size: 1.2rem; /* Reducido de 1.5rem */
+            }
+            .modal-close-button {
+                font-size: 1.5rem;
+            }
+            .modal-days-grid {
+                gap: 3px; /* Reducido de 8px */
+            }
+            .modal-day-name {
+                font-size: 0.7rem; /* Reducido de 0.85rem */
+                padding: 5px 2px; /* Reducido */
+            }
+            .modal-day-cell {
+                min-height: 60px; /* Reducido de 80px */
+                padding: 3px;    /* Reducido de 4px */
+                border-radius: 6px;
+            }
+            .modal-day-number {
+                font-size: 0.6rem; /* Reducido de 0.7rem */
+                top: 2px;
+                right: 3px;
+            }
+            .modal-day-cell .emoji-display-area {
+                gap: 2px; /* Reducido de 6px */
+                margin-top: 2px; /* Reducido de 5px */
+                /* Forzar que los placeholders se apilen si no caben */
+                flex-wrap: wrap; 
+                align-content: center;
+            }
+            .modal-day-cell .emoji-placeholder {
+                width: 22px;       /* Reducido de 24px */
+                height: 22px;      /* Reducido de 24px */
+                font-size: 14px;   /* Reducido de 18px */
+            }
+
+            /* Ajustes para el panel de emojis en pantallas pequeñas */
+            .emoji-picker-panel {
+                grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); /* Más flexible */
+                padding: 8px;
+                gap: 4px;
+                max-width: 180px; /* Más pequeño */
+            }
+            .emoji-picker-panel span {
+                font-size: 18px; /* Ligeramente más pequeño */
+                padding: 3px;
+            }
+
+            /* Ajustes para la vista de mes individual en pantallas pequeñas */
+            .single-month-navigation-container {
+                gap: 0.5rem;
+            }
+            #singleMonthYearDisplay {
+                font-size: 1.5rem;
+            }
+            .month-nav-button {
+                 width: 36px;
+                height: 36px;
+            }
+            .single-month-days-grid {
+                padding: 10px;
+                gap: 5px;
+            }
+            .single-month-day-name {
+                font-size: 0.7rem;
+                padding: 6px 3px;
+            }
+            .single-month-day-cell {
+                min-height: 70px; /* Reducido */
+                padding: 5px;
+                border-radius: 8px;
+            }
+            .single-month-day-number {
+                font-size: 0.75rem;
+            }
+            .single-month-day-cell .emoji-display-area {
+                gap: 4px;
+                padding-top: 4px;
+            }
+            .single-month-day-cell .emoji-placeholder {
+                width: 26px;
+                height: 26px;
+                font-size: 18px;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="app-container">
         <div id="loadingOverlay" style="display: none;">
             <div class="loader"></div>
-            <p>Cargando calendario...</p>
+            <p id="loadingMessageText">Cargando calendario...</p> 
         </div>
 
         <div id="loginPage" class="login-container fade-in">
@@ -617,9 +757,9 @@
         <div id="singleMonthViewPage" class="single-month-view-container" style="display: none;">
             <div class="top-right-controls">
                  <button id="toggleViewButtonSingle" class="control-button" aria-label="Cambiar Vista">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                     </svg>
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                       </svg>
                  </button>
                 <button id="logoutButtonSingle" class="control-button" aria-label="Cerrar Sesión">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -670,6 +810,7 @@
 
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingMessageText = document.getElementById('loadingMessageText'); 
         const loginPage = document.getElementById('loginPage');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -716,6 +857,16 @@
         let currentEditingDayKey = null;
         let currentEditingPlaceholderKey = null;
 
+        const funLoadingMessages = [
+            "Cargando tonqui...",
+            "Espera un poco tonquito...",
+            "Preparando tu CalenTonqui...",
+            "Un momentito, por favor...",
+            "Afinando los calendarios...",
+            "¡Ya casi está tu tonqui-calendario!"
+        ];
+        const defaultLoadingMessage = "Cargando calendario...";
+
         const workSequenceStartDateOriginal = Date.UTC(2025, 0, 3);
         const workSequencePattern = [
             'TD', 'TD', 'TD', 'L',  'L',  'TD', 'TD', 'L',  'L',  'L',
@@ -741,6 +892,14 @@
             authMessage.style.display = 'block';
         }
 
+        function showLoading(message) {
+            loadingMessageText.textContent = message || defaultLoadingMessage;
+            loadingOverlay.style.display = 'flex';
+        }
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
         async function loadDayEmojisFromFirestore() {
             if (!currentUserId) return;
             try {
@@ -757,7 +916,7 @@
                 }
             } catch (error) {
                 console.error("Error loading emojis from Firestore: ", error);
-                showAuthMessage("Error al cargar emojis desde la base de datos.", true);
+                showAuthMessage("Error al cargar emojis.", true);
             }
         }
 
@@ -771,7 +930,7 @@
                 }
             } catch (error) {
                 console.error("Error saving emoji to Firestore: ", error);
-                showAuthMessage("Error al guardar emoji online.", true);
+                showAuthMessage("Error al guardar emoji.", true);
             }
         }
 
@@ -782,7 +941,8 @@
             const persistence = rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
 
             showAuthMessage("Iniciando sesión...", false); 
-            loadingOverlay.style.display = 'flex'; 
+            const randomFunMessage = funLoadingMessages[Math.floor(Math.random() * funLoadingMessages.length)];
+            showLoading(randomFunMessage); 
 
             try {
                 await fbAuth.setPersistence(persistence);
@@ -795,7 +955,7 @@
                 } else {
                     showAuthMessage('Error al iniciar sesión: ' + error.message, true);
                 }
-                loadingOverlay.style.display = 'none'; 
+                hideLoading(); 
             }
         });
 
@@ -803,7 +963,7 @@
             if (user) {
                 currentUserId = user.uid;
                 if (loadingOverlay.style.display === 'none') { 
-                    loadingOverlay.style.display = 'flex';
+                    showLoading(); 
                 }
                 authMessage.style.display = 'none'; 
 
@@ -827,7 +987,7 @@
                 const remembered = localStorage.getItem('calendarRememberMe') === 'true';
                 rememberMeCheckbox.checked = remembered;
                 
-                loadingOverlay.style.display = 'none'; 
+                hideLoading(); 
 
             } else {
                 currentUserId = null;
@@ -843,18 +1003,18 @@
                 passwordInput.value = '';
                 showAuthMessage("Sesión cerrada o no iniciada.", false);
                 setTimeout(() => authMessage.style.display = 'none', 2000);
-                loadingOverlay.style.display = 'none'; 
+                hideLoading(); 
             }
         });
 
         function handleLogout() {
             showAuthMessage("Cerrando sesión...", false);
-            loadingOverlay.style.display = 'flex'; 
+            showLoading("Cerrando tu tonqui-sesión..."); 
             fbAuth.signOut()
                 .catch(error => { 
                     console.error("Error al cerrar sesión:", error);
                     showAuthMessage("Error al cerrar sesión.", true);
-                    loadingOverlay.style.display = 'none'; 
+                    hideLoading(); 
                 });
         }
         logoutButton.addEventListener('click', handleLogout);
@@ -935,7 +1095,7 @@
             emojiPickerPanel.innerHTML = '';
             availableEmojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji || '�';
+                emojiSpan.textContent = emoji || '?';
                 emojiSpan.title = emoji ? emoji : "Borrar emoji";
                 emojiSpan.addEventListener('click', () => selectEmoji(emoji));
                 emojiPickerPanel.appendChild(emojiSpan);
@@ -1244,7 +1404,7 @@
         // --- INICIALIZACIÓN ---
         populateEmojiPicker();
         if (!fbAuth.currentUser) {
-            loadingOverlay.style.display = 'none';
+            hideLoading(); 
         }
     </script>
 </body>
